@@ -53,7 +53,7 @@
 
     <!-- === Level 1: 顶部主导航 (透明背景) === -->
     <nav class="w-full flex-none py-4 px-6 lg:px-8 z-50">
-        <div class="max-w-[1800px] mx-auto flex justify-between items-center h-16">
+        <div class="mx-auto flex justify-between items-center h-16">
             <div class="flex items-center gap-10">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
@@ -87,7 +87,7 @@
     <!-- === Level 2: 二级功能导航栏 (卡片式悬浮) === -->
     <!-- 关键修改：增加了 px-6 lg:px-8 让其有边距，内部是 max-w-[1800px] -->
     <div class="w-full flex-none px-6 lg:px-8 mt-2 z-40">
-        <div class="max-w-[1800px] mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 h-20 flex items-center justify-between px-6 lg:px-8">
+        <div class="mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 h-20 flex items-center justify-between px-6 lg:px-8">
             <!-- 左侧：大标题 + 竖线 + Pill 菜单 -->
             <div class="flex items-center gap-8 h-full">
                 <!-- 标题放大 -->
@@ -126,8 +126,8 @@
     <!-- === Main Content: 内容区域 === -->
     <!-- 增加 pt-6 让内容与上方卡片保持间距 -->
     <main id="main-content" class="flex-1 w-full overflow-y-auto no-scrollbar p-6 lg:p-8 pt-6">
-        <div class="max-w-[1800px] mx-auto h-full">
-            
+        <!-- <div class="max-w-[1800px] mx-auto h-full"> -->
+        <div class="mx-auto h-full">
             <!-- 场景 1: 仪表盘-店长视图 -->
             <div id="dashboard-view" class="h-full flex flex-col">
                 <!-- KPI 卡片 -->
