@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>惟翎 · 眼视光门店管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        primary: {
+                            50: '#f0fdf4', 100: '#d9f99d', 400: '#84cc16',
+                            500: '#65a30d', 600: '#4d7c0f', 900: '#1a2e05',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f3f4f6; } 
+        .card-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        /* 导航样式 */
+        .nav-active { background-color: #111827; color: white; } 
+        .nav-inactive { color: #4b5563; background-color: transparent; }
+        .nav-inactive:hover { background-color: rgba(255,255,255,0.8); color: #111827; }
+        
+        /* 二级菜单 Pill 样式 */
+        .sub-nav-active { background-color: #f0fdf4; color: #65a30d; font-weight: 600; border: 1px solid #dcfce7; }
+        .sub-nav-inactive { color: #6b7280; font-weight: 500; border: 1px solid transparent; }
+        .sub-nav-inactive:hover { background-color: #f9fafb; color: #374151; }
+    </style>
+</head>
+<body class="text-gray-800 font-sans antialiased h-screen flex flex-col overflow-hidden bg-[#f3f4f6]">
+
+    <!-- === Level 1: 顶部主导航 (透明背景) === -->
+    <nav class="w-full flex-none py-4 px-6 lg:px-8 z-50">
+        <div class="max-w-[1800px] mx-auto flex justify-between items-center h-16">
+            <div class="flex items-center gap-10">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
+                    <div class="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center text-white shadow-md shadow-primary-500/20">
+                        <i class="ph-bold ph-eye text-3xl"></i>
+                    </div>
+                    <span class="font-bold text-3xl tracking-tight text-gray-900">惟翎眼视光</span>
+                </div>
+
+                <!-- 一级菜单容器 (磨砂效果) -->
+                <div id="level1-menu" class="hidden md:flex bg-white/40 backdrop-blur-md p-2 rounded-full border border-white/40 shadow-sm">
+                    <!-- JS 渲染 -->
+                </div>
+            </div>
+
+            <!-- 右侧用户区 -->
+            <div class="flex items-center gap-4">
+                <button class="w-9 h-9 rounded-full bg-white hover:bg-gray-50 flex items-center justify-center text-gray-500 shadow-sm transition">
+                    <i class="ph-bold ph-magnifying-glass"></i>
+                </button>
+                <button class="w-10 h-10 rounded-full bg-white hover:bg-gray-50 flex items-center justify-center text-gray-500 shadow-sm relative transition">
+                    <i class="ph-bold ph-bell text-lg"></i>
+                    <span class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                </button>
+                <div class="flex items-center gap-3 pl-4 border-l border-gray-300/50">
+                    <div class="text-right hidden lg:block leading-tight">
+                        <p class="font-bold text-sm text-gray-900">张店长</p>
+                        <p class="text-gray-500 text-xs">北京旗舰店</p>
+                    </div>
+                    <img class="h-9 w-9 rounded-full object-cover border-2 border-white shadow-sm" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- === Level 2: 二级功能导航栏 (卡片式悬浮) === -->
+    <!-- 关键修改：增加了 px-6 lg:px-8 让其有边距，内部是 max-w-[1800px] -->
+    <div class="w-full flex-none px-6 lg:px-8 mt-2 z-40">
+        <div class="max-w-[1800px] mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 h-20 flex items-center justify-between px-6 lg:px-8">
+            <!-- 左侧：大标题 + 竖线 + Pill 菜单 -->
+            <div class="flex items-center gap-8 h-full">
+                <!-- 标题放大 -->
+                <h2 id="page-title" class="text-2xl font-bold text-gray-900 tracking-tight">仪表盘</h2>
+                
+                <div class="h-8 w-px bg-gray-200"></div> <!-- 分割线 -->
+                
+                <div id="level2-menu" class="flex items-center gap-2">
+                    <!-- JS 渲染二级菜单 -->
+                </div>
+            </div>
+
+            <!-- 右侧：页面级筛选器 -->
+            <div class="flex items-center gap-3">
+                <div class="relative group">
+                    <button class="flex items-center gap-2 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 px-3 py-2 rounded-lg border border-gray-200 transition">
+                        <i class="ph-bold ph-calendar-blank"></i>
+                        <span>本月 (2024-05)</span>
+                        <i class="ph-bold ph-caret-down text-xs"></i>
+                    </button>
+                </div>
+                <div class="relative">
+                    <button class="flex items-center gap-2 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 px-3 py-2 rounded-lg border border-gray-200 transition">
+                        <i class="ph-bold ph-storefront"></i>
+                        <span>全部门店</span>
+                        <i class="ph-bold ph-caret-down text-xs"></i>
+                    </button>
+                </div>
+                <button class="p-2 text-gray-400 hover:text-primary-600 transition">
+                    <i class="ph-bold ph-export text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- === Main Content: 内容区域 === -->
+    <!-- 增加 pt-6 让内容与上方卡片保持间距 -->
+    <main id="main-content" class="flex-1 w-full overflow-y-auto no-scrollbar p-6 lg:p-8 pt-6">
+        <div class="max-w-[1800px] mx-auto h-full">
+            
+            <!-- 场景 1: 仪表盘-店长视图 -->
+            <div id="dashboard-view" class="h-full flex flex-col">
+                <!-- KPI 卡片 -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 flex-none">
+                    <div class="bg-primary-500 rounded-2xl p-7 relative overflow-hidden card-shadow group transition hover:translate-y-[-2px]">
+                        <div class="absolute -right-8 -top-8 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl"></div>
+                        <div class="flex justify-between items-start mb-6 relative z-10">
+                            <div class="w-10 h-10 bg-black/10 rounded-lg flex items-center justify-center text-white">
+                                <i class="ph-bold ph-currency-cny text-xl"></i>
+                            </div>
+                            <div class="bg-white/20 text-white text-xs font-bold px-2 py-1 rounded-md flex items-center gap-1">
+                                <i class="ph-bold ph-arrow-up-right"></i> +17%
+                            </div>
+                        </div>
+                        <div class="relative z-10">
+                            <p class="text-white/80 text-sm mb-1">今日营收</p>
+                            <p class="text-4xl font-bold text-white tracking-tight">¥12,087</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-7 card-shadow flex flex-col justify-between transition hover:translate-y-[-2px]">
+                        <div class="flex justify-between items-start">
+                            <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600">
+                                <i class="ph-bold ph-calendar-check text-xl"></i>
+                            </div>
+                            <div class="text-green-600 bg-green-50 text-xs font-bold px-2 py-1 rounded-md">+12%</div>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">本月预约量</p>
+                            <p class="text-4xl font-bold text-gray-900 tracking-tight">892 <span class="text-sm font-normal text-gray-400">人次</span></p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-7 card-shadow flex flex-col justify-between transition hover:translate-y-[-2px]">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="text-gray-900 font-bold">销售目标</p>
+                            <i class="ph-bold ph-dots-three text-gray-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-bold text-gray-900 mb-4 tracking-tight">¥50,901 <span class="text-sm text-gray-400 font-normal">/ ¥68k</span></p>
+                            <div class="w-full bg-gray-100 rounded-full h-3 mb-2 overflow-hidden">
+                                <div class="bg-primary-500 h-full rounded-full" style="width: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 图表区域 -->
+                <div class="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 min-h-[400px]">
+                    <div class="bg-white rounded-2xl p-7 card-shadow flex flex-col">
+                        <h3 class="text-gray-900 font-bold mb-4 text-lg">客户满意度 (NPS)</h3>
+                        <div class="flex-1 relative flex items-center justify-center">
+                            <canvas id="satisfactionChart"></canvas>
+                            <div class="absolute text-center mt-12">
+                                <p class="text-4xl font-bold text-gray-900">4.8</p>
+                                <div class="flex justify-center text-yellow-400 text-xs mt-1 gap-0.5"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-7 card-shadow lg:col-span-2 flex flex-col">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-gray-900 font-bold text-lg">营收趋势分析</h3>
+                            <div class="flex bg-gray-100 p-0.5 rounded-lg">
+                                <button class="px-3 py-1 bg-white shadow-sm rounded-md text-xs font-bold text-gray-900">月视图</button>
+                                <button class="px-3 py-1 text-xs text-gray-500">年视图</button>
+                            </div>
+                        </div>
+                        <div class="flex-1 relative w-full">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 场景 2: 通用功能占位符 -->
+            <div id="generic-view" class="hidden h-full flex flex-col items-center justify-center text-center">
+                <div class="w-24 h-24 bg-white shadow-sm border border-gray-100 rounded-2xl flex items-center justify-center mb-6">
+                    <i id="generic-icon" class="ph-duotone ph-wrench text-5xl text-primary-500"></i>
+                </div>
+                <h2 id="generic-title" class="text-3xl font-bold text-gray-900 mb-2">页面标题</h2>
+                <p class="text-gray-500 max-w-md mb-8 text-sm">此模块的二级页面已构建完毕，等待填充具体业务组件。</p>
+                
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 max-w-3xl w-full text-left relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-primary-500"></div>
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+                        <i class="ph-bold ph-list-dashes"></i> 本页面包含功能模块
+                    </h3>
+                    <div id="feature-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- JS 填充 -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // 菜单配置保持不变
+        const menuConfig = {
+            dashboard: {
+                id: 'dashboard', icon: 'ph-squares-four', label: '仪表盘',
+                subs: [
+                    { id: 'store_view', label: '门店经营概览', features: [] },
+                    { id: 'doctor_view', label: '医生个人看板', features: ['我的今日排班', '个人业绩进度条', '今日预约患者列表', '待复查患者提醒'] },
+                    { id: 'front_view', label: '前台工作台', features: ['今日预约看板', '现场快速登记', '待服务队列', '爽约记录处理'] }
+                ]
+            },
+            analytics: {
+                id: 'analytics', icon: 'ph-chart-bar', label: '数据分析',
+                subs: [
+                    { id: 'financial', label: '财务报表', features: ['营收统计 (日/月/年)', '支付方式构成分析', '欠款/挂账统计', '退款率分析'] },
+                    { id: 'sales', label: '销售分析', features: ['套餐销量排行榜', '镜片/镜架 SKU 动销率', '连带率分析 (客单价)', '折扣发放统计'] },
+                    { id: 'traffic', label: '客流分析', features: ['新老客占比趋势', '渠道来源分析 (小程序/自然)', '到店转化漏斗', '客流高峰时段热力图'] },
+                    { id: 'quality', label: '医疗质量', features: ['验光处方修改率', '复查异常率统计', '加工损耗率', '客户投诉/满意度分析'] }
+                ]
+            },
+            crm: {
+                id: 'crm', icon: 'ph-users', label: '客户档案',
+                subs: [
+                    { id: 'client_list', label: '客户列表', features: ['全量客户查询', '高级筛选 (年龄/度数/来源)', '客户画像 360视图', '导出 Excel'] },
+                    { id: 'pool', label: '公海池', features: ['未分配潜客列表', '过期未跟进回流', '销售线索领取', '线索分配规则'] },
+                    { id: 'member', label: '会员管理', features: ['会员等级规则配置', '积分兑换记录', '会员专属权益设置', '家庭档案绑定'] },
+                    { id: 'followup', label: '回访计划', features: ['系统自动回访任务', '复查提醒列表', '生日关怀任务', '回访结果录入'] }
+                ]
+            },
+            inventory: {
+                id: 'inventory', icon: 'ph-package', label: '库存管理',
+                subs: [
+                    { id: 'product', label: '商品管理', features: ['SKU 录入 (镜架/太阳镜)', '镜片光度表矩阵维护', '隐形/护理液批号管理', '价格体系设置'] },
+                    { id: 'inbound', label: '入库管理', features: ['采购订单创建', '采购入库单', '退货入库', '供应商管理'] },
+                    { id: 'stock', label: '库存查询', features: ['实时库存监控', '效期预警 (隐形/药水)', '安全库存预警', '库存成本估算'] },
+                    { id: 'transfer', label: '盘点调拨', features: ['门店间调货申请', '月度/季度盘点录入', '盘盈盘亏调整', '库存流水日志'] }
+                ]
+            },
+            pos: {
+                id: 'pos', icon: 'ph-receipt', label: '单据收银',
+                subs: [
+                    { id: 'cashier', label: '收银台', features: ['快速开单 (选人->选品)', '验光数据关联', '套餐/折扣应用', '聚合支付结算'] },
+                    { id: 'orders', label: '消费记录', features: ['历史订单查询', '退款/冲红操作', '补打小票', '电子发票开具'] },
+                    { id: 'booking', label: '预约管理', features: ['日历视图排班', '预约创建与修改', '医生/设备资源占用', '预约短信通知'] },
+                    { id: 'optometry', label: '验光记录', features: ['验光单据查询 (无金额)', '历史光度趋势对比', '处方打印', '视觉训练记录'] }
+                ]
+            }
+        };
+
+        let currentL1 = 'dashboard';
+        let currentL2 = 'store_view';
+
+        function renderApp() { renderLevel1(); renderLevel2(); renderContent(); }
+
+        function renderLevel1() {
+            document.getElementById('level1-menu').innerHTML = Object.values(menuConfig).map(item => `
+                <button onclick="switchLevel1('${item.id}')" 
+                    class="px-5 py-2 rounded-full text-lg font-medium flex items-center gap-2 transition 
+                    ${currentL1 === item.id ? 'nav-active shadow-md' : 'nav-inactive'}">
+                    <i class="ph-bold ${item.icon}"></i> ${item.label}
+                </button>
+            `).join('');
+        }
+
+        function renderLevel2() {
+            const config = menuConfig[currentL1];
+            document.getElementById('page-title').innerText = config.label;
+            document.getElementById('level2-menu').innerHTML = config.subs.map(sub => `
+                <button onclick="switchLevel2('${sub.id}')"
+                    class="px-5 py-2 rounded-lg text-sm transition cursor-pointer whitespace-nowrap
+                    ${currentL2 === sub.id ? 'sub-nav-active' : 'sub-nav-inactive'}">
+                    ${sub.label}
+                </button>
+            `).join('');
+        }
+
+        function renderContent() {
+            const dashboardEl = document.getElementById('dashboard-view');
+            const genericEl = document.getElementById('generic-view');
+            const sub = menuConfig[currentL1].subs.find(s => s.id === currentL2);
+
+            if (currentL1 === 'dashboard' && currentL2 === 'store_view') {
+                dashboardEl.classList.remove('hidden');
+                genericEl.classList.add('hidden');
+                initCharts();
+            } else {
+                dashboardEl.classList.add('hidden');
+                genericEl.classList.remove('hidden');
+                document.getElementById('generic-title').innerText = sub.label;
+                document.getElementById('generic-icon').className = `ph-duotone ${getIconForSection(currentL1)} text-5xl text-primary-500`;
+                document.getElementById('feature-list').innerHTML = (sub.features || []).map(f => `
+                    <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-primary-200 transition group">
+                        <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-100 text-primary-500 group-hover:bg-primary-50 group-hover:scale-110 transition">
+                            <i class="ph-bold ph-check"></i>
+                        </div>
+                        <span class="text-sm text-gray-700 font-medium group-hover:text-gray-900">${f}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function getIconForSection(id) {
+            const map = { dashboard: 'ph-squares-four', analytics: 'ph-chart-bar', crm: 'ph-users', inventory: 'ph-package', pos: 'ph-receipt' };
+            return map[id] || 'ph-circles-four';
+        }
+
+        window.switchLevel1 = (id) => { currentL1 = id; currentL2 = menuConfig[id].subs[0].id; renderApp(); };
+        window.switchLevel2 = (id) => { currentL2 = id; renderLevel2(); renderContent(); };
+
+        let charts = {};
+        function initCharts() {
+            if (charts.bar) charts.bar.destroy();
+            if (charts.doughnut) charts.doughnut.destroy();
+
+            const ctxBar = document.getElementById('revenueChart').getContext('2d');
+            const gradient = ctxBar.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, '#65a30d'); gradient.addColorStop(1, '#d9f99d');
+
+            charts.bar = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+                    datasets: [
+                        { label: '配镜', data: [35, 42, 30, 45, 58, 72, 65, 48, 40, 55, 62, 80], backgroundColor: '#65a30d', borderRadius: 4, barThickness: 24 },
+                        { label: '验光', data: [20, 25, 22, 30, 35, 40, 45, 30, 25, 30, 35, 45], backgroundColor: '#e5e7eb', borderRadius: 4, barThickness: 24 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display:false} }, scales: { y: {grid:{borderDash:[4,4], drawBorder:false}}, x:{grid:{display:false}} } }
+            });
+
+            const ctxDoughnut = document.getElementById('satisfactionChart').getContext('2d');
+            charts.doughnut = new Chart(ctxDoughnut, {
+                type: 'doughnut',
+                data: {
+                    labels: ['好', '中', '差'],
+                    datasets: [{ data: [85, 10, 5], backgroundColor: ['#65a30d', '#d9f99d', '#f3f4f6'], borderWidth: 0, cutout: '85%', circumference: 260, rotation: 230, borderRadius: 10 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display:false}, tooltip: {enabled:false} } }
+            });
+        }
+
+        window.onload = renderApp;
+    </script>
+</body>
+</html>
