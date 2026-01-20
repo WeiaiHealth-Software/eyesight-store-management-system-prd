@@ -39,9 +39,9 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
         /* 导航样式 */
-        .nav-active { background-color: #111827; color: white; } 
+        .nav-active { background-color: #151515; color: white; } 
         .nav-inactive { color: #353535; background-color: transparent; }
-        .nav-inactive:hover { background-color: rgba(255,255,255,0.8); color: #111827; }
+        .nav-inactive:hover { background-color: rgba(255,255,255,0.8); color: #151515; }
         
         /* 二级菜单 Pill 样式 */
         .sub-nav-active { background-color: #f0fdf4; color: #15803d; font-weight: 600; border: 1px solid #dcfce7; }
@@ -71,7 +71,7 @@
             <div class="flex items-center gap-4">
                 <button class="w-12 h-12 rounded-full bg-white hover:bg-gray-50 flex items-center justify-center text-gray-500 shadow-sm relative transition">
                     <i class="ph-bold ph-bell text-2xl"></i>
-                    <span class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    <span class="absolute top-2 right-2.5 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
                 </button>
                 <div class="flex items-center gap-3 pl-4 border-l border-gray-300/50">
                     <div class="text-right hidden lg:block leading-tight">
@@ -143,7 +143,6 @@
                             </div>
                         </div>
                         <div class="relative z-10">
-                            <p class="text-white/80 text-sm mb-1">今日营收</p>
                             <p class="text-4xl font-bold text-white tracking-tight">¥ 12,087</p>
                         </div>
                     </div>
@@ -166,7 +165,7 @@
                             <i class="ph-bold ph-dots-three text-gray-400"></i>
                         </div>
                         <div>
-                            <p class="text-3xl font-bold text-gray-900 mb-4 tracking-tight">¥50,901 <span class="text-sm text-gray-400 font-normal">/ ¥68k</span></p>
+                            <p class="text-3xl font-bold text-gray-900 mb-4 tracking-tight">¥ 50,901 <span class="text-sm text-gray-400 font-normal">/ ¥68k</span></p>
                             <div class="w-full bg-gray-100 rounded-full h-3 mb-2 overflow-hidden">
                                 <div class="bg-primary-500 h-full rounded-full" style="width: 75%"></div>
                             </div>
@@ -175,7 +174,7 @@
                 </div>
 
                 <!-- 图表区域 -->
-                <div class="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 min-h-[400px]">
+                <div class="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 min-h-0">
                     <div class="bg-white rounded-2xl p-6 card-shadow flex flex-col justify-between h-full">
                         <div>
                             <div class="flex justify-between items-start">
@@ -187,11 +186,11 @@
                             </div>
                         </div>
 
-                        <div class="flex-1 relative flex items-center justify-center my-4">
-                            <div class="w-96 h-96 relative flex items-center justify-center">
+                        <div class="flex-1 relative flex items-center justify-center my-2">
+                            <div class="w-64 h-64 lg:w-72 lg:h-72 relative flex items-center justify-center">
                                 <canvas id="satisfactionChart"></canvas>
                                 <div class="absolute inset-0 flex flex-col items-center justify-center pt-4 pointer-events-none">
-                                    <p class="text-4xl font-bold text-gray-900 tracking-tight">250</p>
+                                    <p class="text-3xl font-bold text-gray-900 tracking-tight">250</p>
                                     <p class="text-gray-400 text-xs mt-1">本月答复</p>
                                 </div>
                             </div>
