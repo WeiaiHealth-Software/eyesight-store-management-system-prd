@@ -275,18 +275,18 @@
                 id: 'analytics', icon: 'ph-chart-bar', label: '数据分析',
                 subs: [
                     { id: 'financial', label: '财务报表', features: ['营收统计 (日/月/年)', '支付方式构成分析', '欠款/挂账统计', '退款率分析'] },
-                    { id: 'sales', label: '销售分析', features: ['套餐销量排行榜', '镜片/镜架 SKU 动销率', '连带率分析 (客单价)', '折扣发放统计'] },
+                    { id: 'sales', label: '销售分析（原CRM消费统计）', features: ['套餐销量排行榜', '镜片/镜架 SKU 动销率', '全局消费统计', '周期/类目统计'] },
                     { id: 'traffic', label: '客流分析', features: ['新老客占比趋势', '渠道来源分析 (小程序/自然)', '到店转化漏斗', '客流高峰时段热力图'] },
-                    { id: 'quality', label: '医疗质量', features: ['验光处方修改率', '复查异常率统计', '加工损耗率', '客户投诉/满意度分析'] }
+                    { id: 'quality', label: '医疗质量', features: ['验光处方修改率', '复查异常率统计', '加工损耗率', '客户投诉/满意度分析'] },
                 ]
             },
             crm: {
                 id: 'crm', icon: 'ph-users', label: '客户档案(CRM)',
                 subs: [
                     { id: 'client_list', label: '客户列表', features: ['全量客户查询', '高级筛选 (年龄/度数/来源)', '客户画像 360视图', '导出 Excel'] },
-                    { id: 'pool', label: '公海池', features: ['未分配潜客列表', '过期未跟进回流', '销售线索领取', '线索分配规则'] },
-                    { id: 'member', label: '会员管理', features: ['会员等级规则配置', '积分兑换记录', '会员专属权益设置', '家庭档案绑定'] },
-                    { id: 'followup', label: '回访计划', features: ['系统自动回访任务', '复查提醒列表', '生日关怀任务', '回访结果录入'] }
+                    { id: 'consumer', label: '消费管理', features: ['消费记录列表（高级筛选）', '新增销售开单', '收费项目列表', '新增收费项目'] },
+                    { id: 'followup', label: '回访管理', features: ['新增回访记录', '筛选条件（姓名、电话、日期、回访项目类型）', '复诊回访列表', '回访统计、复查完成率统计'] },
+										{ id: 'member', label: '会员管理', features: ['会员等级规则配置', '积分兑换记录', '会员专属权益设置', '家庭档案绑定'] },
                 ]
             },
             inventory: {
