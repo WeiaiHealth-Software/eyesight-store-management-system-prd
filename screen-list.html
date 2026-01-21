@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>惟翎 · 诊室大屏</title>
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        primary: {
+                            500: '#15803d',
+                            600: '#166534',
+                            900: '#052e16',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f8fafc; color: #0f172a; }
+        .glass-panel {
+            background: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e2e8f0;
+        }
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col p-6 lg:p-10 select-none bg-slate-50">
+
+    <!-- Header -->
+    <header class="flex justify-between items-center mb-8 flex-none">
+        <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm border border-slate-200">
+                 <img src="logo.svg" alt="logo" class="w-12 h-12">
+            </div>
+            <div>
+                <h1 class="text-4xl font-bold tracking-tight text-slate-900">惟翎眼视光 · 上海旗舰店</h1>
+                <p class="text-slate-500 text-lg mt-1">综合验光中心排队叫号系统</p>
+            </div>
+        </div>
+        <div class="text-right">
+            <p class="text-5xl font-bold font-mono text-slate-900" id="clock">12:00</p>
+            <p class="text-slate-500 text-lg mt-1" id="date">2024年5月20日 星期一</p>
+        </div>
+    </header>
+
+    <!-- Main Content: Rooms Grid -->
+    <main class="flex-1 grid grid-cols-1 gap-5">
+        
+        <!-- 诊室 1 -->
+        <a href="screen-single.html" target="_blank" class="glass-panel rounded-3xl p-6 flex items-center justify-between relative overflow-hidden group hover:shadow-lg transition cursor-pointer">
+            <div class="absolute left-0 top-0 bottom-0 w-2 bg-primary-500"></div>
+            
+            <!-- 房间信息 & 医生 -->
+            <div class="flex items-center gap-8 w-1/3 pl-2">
+                <div class="flex flex-col items-center justify-center w-28 h-28 bg-slate-100 rounded-2xl border border-slate-200">
+                    <span class="text-slate-500 text-sm font-medium">诊室</span>
+                    <span class="text-5xl font-bold text-slate-900 mt-1">101</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <img class="w-20 h-20 rounded-full object-cover border-4 border-white shadow-sm" src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 mb-1">王主任</h2>
+                        <span class="bg-primary-50 text-primary-600 px-2 py-1 rounded-md text-sm font-bold border border-primary-100">高级验光师</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 正在就诊 (重点) -->
+            <div class="flex-1 flex flex-col items-center justify-center border-l border-r border-slate-100 h-full px-8 bg-slate-50/50">
+                <p class="text-primary-600 text-lg font-bold mb-1 animate-pulse-slow">正在就诊</p>
+                <div class="text-6xl font-bold text-slate-900 tracking-widest font-mono">A089</div>
+                <p class="text-slate-500 text-xl mt-1">李*明</p>
+            </div>
+
+            <!-- 候诊队列 -->
+            <div class="w-1/3 pl-8 pr-2">
+                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">候诊队列</p>
+                <div class="flex gap-3">
+                    <div class="bg-white rounded-xl p-3 flex-1 text-center border border-slate-200 shadow-sm">
+                        <span class="block text-xl font-bold text-slate-900 mb-0.5">A090</span>
+                        <span class="text-xs text-slate-500">张*</span>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-3 flex-1 text-center border border-slate-100">
+                        <span class="block text-xl font-bold text-slate-400 mb-0.5">A091</span>
+                        <span class="text-xs text-slate-400">王*强</span>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-3 flex-1 text-center border border-slate-100">
+                        <span class="block text-xl font-bold text-slate-400 mb-0.5">A092</span>
+                        <span class="text-xs text-slate-400">陈*</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- 诊室 2 -->
+        <a href="screen-single.html" target="_blank" class="glass-panel rounded-3xl p-6 flex items-center justify-between relative overflow-hidden hover:shadow-lg transition cursor-pointer">
+            <div class="absolute left-0 top-0 bottom-0 w-2 bg-blue-500"></div>
+            
+            <div class="flex items-center gap-8 w-1/3 pl-2">
+                <div class="flex flex-col items-center justify-center w-28 h-28 bg-slate-100 rounded-2xl border border-slate-200">
+                    <span class="text-slate-500 text-sm font-medium">诊室</span>
+                    <span class="text-5xl font-bold text-slate-900 mt-1">102</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <img class="w-20 h-20 rounded-full object-cover border-4 border-white shadow-sm" src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 mb-1">张医生</h2>
+                        <span class="bg-blue-50 text-blue-600 px-2 py-1 rounded-md text-sm font-bold border border-blue-100">资深视光师</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-1 flex flex-col items-center justify-center border-l border-r border-slate-100 h-full px-8 bg-slate-50/50">
+                <p class="text-blue-600 text-lg font-bold mb-1 animate-pulse-slow">正在就诊</p>
+                <div class="text-6xl font-bold text-slate-900 tracking-widest font-mono">B042</div>
+                <p class="text-slate-500 text-xl mt-1">赵*敏</p>
+            </div>
+
+            <div class="w-1/3 pl-8 pr-2">
+                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">候诊队列</p>
+                <div class="flex gap-3">
+                    <div class="bg-white rounded-xl p-3 flex-1 text-center border border-slate-200 shadow-sm">
+                        <span class="block text-xl font-bold text-slate-900 mb-0.5">B043</span>
+                        <span class="text-xs text-slate-500">刘*</span>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-3 flex-1 text-center border border-slate-100">
+                        <span class="block text-xl font-bold text-slate-400 mb-0.5">B044</span>
+                        <span class="text-xs text-slate-400">孙*伟</span>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-3 flex-1 text-center border border-slate-100 opacity-50">
+                        <span class="block text-xl font-bold text-slate-400 mb-0.5">--</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- 诊室 3 -->
+        <a href="screen-single.html" target="_blank" class="glass-panel rounded-3xl p-6 flex items-center justify-between relative overflow-hidden hover:shadow-lg transition cursor-pointer">
+            <div class="absolute left-0 top-0 bottom-0 w-2 bg-purple-500"></div>
+            
+            <div class="flex items-center gap-8 w-1/3 pl-2">
+                <div class="flex flex-col items-center justify-center w-28 h-28 bg-slate-100 rounded-2xl border border-slate-200">
+                    <span class="text-slate-500 text-sm font-medium">诊室</span>
+                    <span class="text-5xl font-bold text-slate-900 mt-1">103</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <img class="w-20 h-20 rounded-full object-cover border-4 border-white shadow-sm" src="https://images.unsplash.com/photo-1614608682850-e0d6ed316d47?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 mb-1">刘医生</h2>
+                        <span class="bg-purple-50 text-purple-600 px-2 py-1 rounded-md text-sm font-bold border border-purple-100">配镜顾问</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-1 flex flex-col items-center justify-center border-l border-r border-slate-100 h-full px-8 bg-slate-50/50">
+                <p class="text-purple-600 text-lg font-bold mb-1">正在呼叫</p>
+                <div class="text-6xl font-bold text-slate-900 tracking-widest font-mono animate-bounce">C015</div>
+                <p class="text-slate-500 text-xl mt-1">周*杰</p>
+            </div>
+
+            <div class="w-1/3 pl-8 pr-2">
+                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">候诊队列</p>
+                <div class="flex gap-3">
+                    <div class="bg-white rounded-xl p-3 flex-1 text-center border border-slate-200 shadow-sm">
+                        <span class="block text-xl font-bold text-slate-900 mb-0.5">C016</span>
+                        <span class="text-xs text-slate-500">吴*</span>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-3 flex-1 text-center border border-slate-100 opacity-50">
+                        <span class="block text-xl font-bold text-slate-400 mb-0.5">--</span>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-3 flex-1 text-center border border-slate-100 opacity-50">
+                        <span class="block text-xl font-bold text-slate-400 mb-0.5">--</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-8 flex-none border-t border-slate-200 pt-6 flex justify-between items-center text-slate-500 text-lg">
+        <div class="flex items-center gap-6">
+            <span class="flex items-center gap-2"><i class="ph-fill ph-speaker-high text-2xl text-slate-400"></i> 请留意语音广播</span>
+            <span class="w-px h-6 bg-slate-300"></span>
+            <span>过号请重新取号</span>
+        </div>
+        <div>
+            系统状态：<span class="text-green-600 flex items-center gap-2 inline-flex"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> 在线</span>
+        </div>
+    </footer>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            const dateString = now.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+            
+            document.getElementById('clock').innerText = timeString;
+            document.getElementById('date').innerText = dateString;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html>

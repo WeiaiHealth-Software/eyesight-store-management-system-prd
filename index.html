@@ -73,6 +73,10 @@
                     <i class="ph-bold ph-bell text-2xl"></i>
                     <span class="absolute top-2 right-2.5 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
                 </button>
+                <!-- System Settings Button -->
+                <button onclick="toggleSettingsDrawer()" class="w-12 h-12 rounded-full bg-white hover:bg-gray-50 flex items-center justify-center text-gray-500 shadow-sm transition ml-2" title="系统设置">
+                    <i class="ph-bold ph-gear text-2xl"></i>
+                </button>
                 <div class="flex items-center gap-3 pl-4 border-l border-gray-300/50">
                     <div class="text-right hidden lg:block leading-tight">
                         <p class="font-bold text-sm text-gray-900">张店长</p>
@@ -259,8 +263,85 @@
         </div>
     </main>
 
+    <!-- System Settings Drawer -->
+    <div id="settings-drawer-overlay" onclick="toggleSettingsDrawer()" class="fixed inset-0 bg-black/20 z-[60] hidden transition-opacity duration-300 opacity-0 backdrop-blur-sm"></div>
+    <div id="settings-drawer" class="fixed top-0 right-0 h-full w-96 bg-white shadow-2xl z-[70] transform translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2"><i class="ph-duotone ph-gear text-primary-600"></i> 系统设置</h2>
+            <button onclick="toggleSettingsDrawer()" class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition">
+                <i class="ph-bold ph-x text-lg"></i>
+            </button>
+        </div>
+        <div class="p-6 overflow-y-auto flex-1 bg-white">
+             <!-- Card to link to screen-list.html -->
+             <a href="screen-list.html" target="_blank" class="block bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md hover:border-primary-200 transition group relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition">
+                    <i class="ph-duotone ph-television text-6xl text-primary-500"></i>
+                </div>
+                <div class="flex items-start gap-4 mb-3 relative z-10">
+                    <div class="w-12 h-12 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center flex-none">
+                        <i class="ph-duotone ph-television text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg group-hover:text-primary-600 transition">诊室列表大屏</h3>
+                        <p class="text-xs text-gray-500 mt-1">大厅/走廊综合显示屏</p>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 relative z-10 leading-relaxed">点击查看所有诊室的实时排队叫号状态，支持大屏展示模式。</p>
+                <div class="mt-4 flex items-center text-primary-600 text-sm font-bold opacity-0 group-hover:opacity-100 transition transform translate-x-[-10px] group-hover:translate-x-0">
+                    打开大屏 <i class="ph-bold ph-arrow-right ml-1"></i>
+                </div>
+             </a>
+             
+             <!-- Placeholder for future settings -->
+             <div class="mt-8">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">更多设置</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 opacity-50 cursor-not-allowed">
+                        <div class="flex items-center gap-3">
+                            <i class="ph-duotone ph-paint-bucket text-gray-400 text-xl"></i>
+                            <span class="text-gray-500 font-medium">主题外观</span>
+                        </div>
+                        <i class="ph-bold ph-lock-key text-gray-300"></i>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 opacity-50 cursor-not-allowed">
+                        <div class="flex items-center gap-3">
+                            <i class="ph-duotone ph-users-three text-gray-400 text-xl"></i>
+                            <span class="text-gray-500 font-medium">账号权限</span>
+                        </div>
+                        <i class="ph-bold ph-lock-key text-gray-300"></i>
+                    </div>
+                </div>
+             </div>
+        </div>
+        <div class="p-4 border-t border-gray-100 bg-gray-50 text-center text-xs text-gray-400">
+            EyeSight Management System v1.0.0
+        </div>
+    </div>
+
     <script>
-        // 菜单配置保持不变
+        function toggleSettingsDrawer() {
+            const drawer = document.getElementById('settings-drawer');
+            const overlay = document.getElementById('settings-drawer-overlay');
+            
+            if (drawer.classList.contains('translate-x-full')) {
+                // Open
+                overlay.classList.remove('hidden');
+                // small delay to allow display:block to apply before opacity transition
+                setTimeout(() => {
+                    overlay.classList.remove('opacity-0');
+                    drawer.classList.remove('translate-x-full');
+                }, 10);
+            } else {
+                // Close
+                drawer.classList.add('translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                }, 300);
+            }
+        }
+
         const menuConfig = {
             dashboard: {
                 id: 'dashboard', icon: 'ph-squares-four', label: '仪表盘',
@@ -285,7 +366,15 @@
                     { id: 'client_list', label: '客户列表', features: ['全量客户查询', '高级筛选 (年龄/度数/来源)', '客户画像 360视图', '导出 Excel'] },
                     { id: 'consumer', label: '消费管理', features: ['消费记录列表（高级筛选）', '新增销售开单', '收费项目列表', '新增收费项目'] },
                     { id: 'followup', label: '回访管理', features: ['新增回访记录', '筛选条件（姓名、电话、日期、回访项目类型）', '复诊回访列表', '回访统计、复查完成率统计'] },
-										{ id: 'member', label: '会员管理', features: ['会员等级规则配置', '积分兑换记录', '会员专属权益设置', '家庭档案绑定'] },
+                    { id: 'member', label: '会员管理', features: ['会员等级规则配置', '积分兑换记录', '会员专属权益设置', '家庭档案绑定'] },
+                ]
+            },
+            store_mgmt: {
+                id: 'store_mgmt', icon: 'ph-storefront', label: '门店管理',
+                subs: [
+                    { id: 'doctor_mgmt', label: '医生管理', features: ['医生档案维护 (职称/专业)', '医生账号权限设置', '业绩指标设定', '医生个人简介配置'] },
+                    { id: 'room_mgmt', label: '诊室管理', features: ['诊室编号/名称设置', '诊室设备绑定 (综合验光仪等)', '诊室状态监控', '数字标牌设备绑定'] },
+                    { id: 'scheduling', label: '医生排班', features: ['可视化排班表 (日/周/月)', '排班关联诊室 (自动分配)', '临时调班/请假处理', '排班发布与通知'] }
                 ]
             },
             inventory: {
@@ -361,7 +450,7 @@
         }
 
         function getIconForSection(id) {
-            const map = { dashboard: 'ph-squares-four', analytics: 'ph-chart-bar', crm: 'ph-users', inventory: 'ph-package', pos: 'ph-receipt' };
+            const map = { dashboard: 'ph-squares-four', analytics: 'ph-chart-bar', crm: 'ph-users', store_mgmt: 'ph-storefront', inventory: 'ph-package', pos: 'ph-receipt' };
             return map[id] || 'ph-circles-four';
         }
 
