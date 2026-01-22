@@ -382,9 +382,10 @@
             inventory: {
                 id: 'inventory', icon: 'ph-package', label: '库存管理(ERP)',
                 subs: [
-                    { id: 'product', label: '商品管理', features: ['SKU 录入 (镜架/太阳镜)', '镜片光度表矩阵维护', '隐形/护理液批号管理', '价格体系设置'] },
-                    { id: 'inbound', label: '入库管理', features: ['采购订单创建', '采购入库单', '退货入库', '供应商管理'] },
-                    { id: 'stock', label: '库存查询', features: ['实时库存监控', '效期预警 (隐形/药水)', '安全库存预警', '库存成本估算'] },
+                    { id: 'product', label: '商品管理', features: ['全量商品库查询', '商品档案列表', '实时库存详情', '价格体系维护'] },
+                    { id: 'inbound', label: '入库管理', features: ['采购订单创建', '采购入库单', '销售退回入库', '供应商管理'] },
+                    { id: 'outbound', label: '出库管理', features: ['销售出库记录', '采购退货出库', '报损/领用出库', '出库单据管理'] },
+                    { id: 'category', label: '类目管理', features: ['商品类目树维护', '新增/编辑类目', '类目属性模板配置', '类目关联品牌设置'] },
                     { id: 'transfer', label: '盘点调拨', features: ['门店间调货申请', '月度/季度盘点录入', '盘盈盘亏调整', '库存流水日志'] }
                 ]
             },
