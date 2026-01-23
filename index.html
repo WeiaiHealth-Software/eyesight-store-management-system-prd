@@ -17,16 +17,16 @@
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
                         primary: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            200: '#86efac',
-                            300: '#4ade80',
-                            400: '#22c55e',
-                            500: '#15803d',
-                            600: '#166534',
-                            700: '#14532d',
-                            800: '#14532d',
-                            900: '#052e16',
+                            50: 'var(--color-primary-50)',
+                            100: 'var(--color-primary-100)',
+                            200: 'var(--color-primary-200)',
+                            300: 'var(--color-primary-300)',
+                            400: 'var(--color-primary-400)',
+                            500: 'var(--color-primary-500)',
+                            600: 'var(--color-primary-600)',
+                            700: 'var(--color-primary-700)',
+                            800: 'var(--color-primary-800)',
+                            900: 'var(--color-primary-900)',
                         }
                     }
                 }
@@ -34,17 +34,37 @@
         }
     </script>
     <style>
+        :root {
+            --color-dark: #111827;
+            /* 默认主题：科技蓝 (Tech Blue) */
+            --color-primary-50: #eff6ff;
+            --color-primary-100: #dbeafe;
+            --color-primary-200: #bfdbfe;
+            --color-primary-300: #93c5fd;
+            --color-primary-400: #60a5fa;
+            --color-primary-500: #3b82f6;
+            --color-primary-600: #2563eb;
+            --color-primary-700: #1d4ed8;
+            --color-primary-800: #1e40af;
+            --color-primary-900: #1e3a8a;
+        }
+
         body { background-color: #f3f4f6; } 
         .card-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
         /* 导航样式 */
-        .nav-active { background-color: #151515; color: white; } 
+        .nav-active { background-color: var(--color-primary-600); color: white; } 
         .nav-inactive { color: #353535; background-color: transparent; }
-        .nav-inactive:hover { background-color: rgba(255,255,255,0.8); color: #151515; }
+        .nav-inactive:hover { background-color: rgba(255,255,255,0.8); color: var(--color-primary-600); }
         
         /* 二级菜单 Pill 样式 */
-        .sub-nav-active { background-color: #f0fdf4; color: #15803d; font-weight: 600; border: 1px solid #dcfce7; }
+        .sub-nav-active { 
+            background-color: var(--color-primary-50); 
+            color: var(--color-primary-500); 
+            font-weight: 600; 
+            border: 1px solid var(--color-primary-100); 
+        }
         .sub-nav-inactive { color: #4b5563; font-weight: 500; border: 1px solid transparent; }
         .sub-nav-inactive:hover { background-color: #f9fafb; color: #374151; }
     </style>
@@ -57,7 +77,7 @@
             <div class="flex items-center gap-10">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
-                  <img src="logo.svg" alt="logo" class="w-12 h-12">
+                  <svg t="1768891591029" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="14567" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64"><path d="M512.047072 64.62588c-246.254543 0-445.883163 199.62862-445.883163 445.883163s199.62862 445.883163 445.883163 445.883163 445.883163-199.62862 445.883163-445.883163S758.301616 64.62588 512.047072 64.62588zM641.561821 743.301993 368.898815 743.301993c-119.712499-34.183544-77.214593-200.275349-77.214593-200.275349 26.542516 67.160609 86.865393 67.354014 86.865393 67.354014l258.052241 2.412956c74.93569-8.55791 103.890138-72.179926 103.890138-72.178903C777.789459 754.964614 641.561821 743.301993 641.561821 743.301993zM690.974207 538.254967c-67.562768-0.00614-91.692329-82.09474-91.692329-82.09474s0.343831 80.419588-86.119403 82.013899l0 0.070608c-0.384763 0-0.73678-0.030699-1.11745-0.034792-0.381693 0.004093-0.732687 0.033769-1.11745 0.034792l0-0.070608c-86.462211-1.593288-86.119403-82.013899-86.119403-82.013899s-24.12956 82.0886-91.692329 82.09474c-103.756085 0.00921-82.039481-84.506672-82.039481-84.506672l16.987906-120.937396c0 0 2.338255-47.591925 36.097126-55.207369L510.930645 277.603529l2.232854 0 206.765157 0c33.759895 7.615445 36.097126 55.207369 36.097126 55.207369l16.987906 120.937396C773.014712 453.748295 794.730293 538.263154 690.974207 538.254967z" fill="var(--color-primary-500)" p-id="14568"></path></svg>
                   <span class="hidden min-[1400px]:block font-bold text-3xl tracking-tight text-gray-900">眼视光门店管理系统</span>
                 </div>
             </div>
@@ -202,11 +222,11 @@
                         <!-- Legend -->
                         <div class="flex justify-center gap-4 mb-6">
                             <div class="flex items-center gap-1.5">
-                                <span class="w-4 h-4 rounded-full bg-[#15803d]"></span>
+                                <span class="w-4 h-4 rounded-full bg-primary-500"></span>
                                 <span class="text-md font-bold text-gray-600">满意</span>
                             </div>
                             <div class="flex items-center gap-1.5">
-                                <span class="w-4 h-4 rounded-full bg-[#86efac]"></span>
+                                <span class="w-4 h-4 rounded-full bg-primary-200"></span>
                                 <span class="text-md font-bold text-gray-600">中规中矩</span>
                             </div>
                             <div class="flex items-center gap-1.5">
@@ -218,7 +238,7 @@
                         <!-- Stats & Description -->
                         <div class="flex flex-col gap-3">
                             <div class="flex items-center gap-3 bg-gray-50 rounded-full p-1 pr-4 w-full">
-                                <div class="bg-[#dcfce7] text-[#166534] text-xs font-bold px-3 py-2 rounded-full flex items-center gap-1 whitespace-nowrap">
+                                <div class="bg-primary-100 text-primary-600 text-xs font-bold px-3 py-2 rounded-full flex items-center gap-1 whitespace-nowrap">
                                     <i class="ph-bold ph-arrow-up-right"></i> +12%
                                 </div>
                                 <span class="text-md text-gray-500 font-medium truncate">客户满意度 (CSAT): 4.7/5</span>
@@ -297,12 +317,19 @@
              <div class="mt-8">
                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">更多设置</h3>
                 <div class="space-y-3">
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 opacity-50 cursor-not-allowed">
+                    <div class="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
                         <div class="flex items-center gap-3">
-                            <i class="ph-duotone ph-paint-bucket text-gray-400 text-xl"></i>
-                            <span class="text-gray-500 font-medium">主题外观</span>
+                            <i class="ph-duotone ph-paint-bucket text-primary-500 text-xl"></i>
+                            <span class="text-gray-900 font-medium">主题外观</span>
                         </div>
-                        <i class="ph-bold ph-lock-key text-gray-300"></i>
+                        <div class="flex gap-2">
+                            <!-- 松林绿 -->
+                            <button onclick="switchTheme('forest')" class="w-6 h-6 rounded-full bg-[#15803d] ring-2 ring-offset-2 ring-transparent hover:ring-gray-200 focus:ring-[#15803d] transition" title="松林绿"></button>
+                            <!-- 科技蓝 -->
+                            <button onclick="switchTheme('blue')" class="w-6 h-6 rounded-full bg-[#3b82f6] ring-2 ring-offset-2 ring-transparent hover:ring-gray-200 focus:ring-[#3b82f6] transition" title="科技蓝"></button>
+                            <!-- 优雅紫 -->
+                            <button onclick="switchTheme('purple')" class="w-6 h-6 rounded-full bg-[#a855f7] ring-2 ring-offset-2 ring-transparent hover:ring-gray-200 focus:ring-[#a855f7] transition" title="优雅紫"></button>
+                        </div>
                     </div>
                     <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 opacity-50 cursor-not-allowed">
                         <div class="flex items-center gap-3">
@@ -320,6 +347,40 @@
     </div>
 
     <script>
+        // 主题配置
+        const themes = {
+            forest: {
+                50: '#f0fdf4', 100: '#dcfce7', 200: '#86efac', 300: '#4ade80', 400: '#22c55e',
+                500: '#15803d', 600: '#166534', 700: '#14532d', 800: '#14532d', 900: '#052e16',
+            },
+            blue: {
+                50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa',
+                500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a',
+            },
+            purple: {
+                50: '#faf5ff', 100: '#f3e8ff', 200: '#e9d5ff', 300: '#d8b4fe', 400: '#c084fc',
+                500: '#a855f7', 600: '#9333ea', 700: '#7e22ce', 800: '#6b21a8', 900: '#581c87',
+            }
+        };
+
+        let currentThemeName = 'blue';
+
+        function switchTheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
+            
+            currentThemeName = themeName;
+            const root = document.documentElement;
+            Object.keys(theme).forEach(key => {
+                root.style.setProperty(`--color-primary-${key}`, theme[key]);
+            });
+
+            // Re-render charts if they exist
+            if (currentL1 === 'dashboard' && currentL2 === 'store_view') {
+                initCharts();
+            }
+        }
+
         function toggleSettingsDrawer() {
             const drawer = document.getElementById('settings-drawer');
             const overlay = document.getElementById('settings-drawer-overlay');
@@ -463,17 +524,19 @@
             if (charts.bar) charts.bar.destroy();
             if (charts.doughnut) charts.doughnut.destroy();
 
+            const theme = themes[currentThemeName];
+
             const ctxBar = document.getElementById('revenueChart').getContext('2d');
             const gradient = ctxBar.createLinearGradient(0, 0, 0, 300);
-            gradient.addColorStop(0, '#15803d'); gradient.addColorStop(1, '#d9f99d');
+            gradient.addColorStop(0, theme[500]); gradient.addColorStop(1, theme[100]);
 
             charts.bar = new Chart(ctxBar, {
                 type: 'bar',
                 data: {
                     labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
                     datasets: [
-                        { label: '配镜', data: [35, 42, 30, 45, 58, 72, 65, 48, 40, 55, 62, 80], backgroundColor: '#15803d', borderRadius: 4, barThickness: 24 },
-                        { label: '验光', data: [20, 25, 22, 30, 35, 40, 45, 30, 25, 30, 35, 45], backgroundColor: '#86efac', borderRadius: 4, barThickness: 24 }
+                        { label: '配镜', data: [35, 42, 30, 45, 58, 72, 65, 48, 40, 55, 62, 80], backgroundColor: theme[500], borderRadius: 4, barThickness: 24 },
+                        { label: '验光', data: [20, 25, 22, 30, 35, 40, 45, 30, 25, 30, 35, 45], backgroundColor: theme[200], borderRadius: 4, barThickness: 24 }
                     ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display:false} }, scales: { y: {grid:{borderDash:[4,4], drawBorder:false}}, x:{grid:{display:false}} } }
@@ -486,7 +549,7 @@
                     labels: ['满意', '中规中矩', '不满意'],
                     datasets: [{ 
                         data: [65, 25, 10], 
-                        backgroundColor: ['#15803d', '#86efac', '#e5e7eb'], 
+                        backgroundColor: [theme[500], theme[200], '#e5e7eb'], 
                         borderWidth: 0, 
                         cutout: '75%', 
                         circumference: 260, 
