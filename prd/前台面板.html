@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>惟翎门店管理系统 - 前台面板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+        }
+        
+        .primary-bg {
+            background-color: var(--primary-color);
+        }
+        
+        .primary-text {
+            color: var(--primary-color);
+        }
+        
+        .primary-border {
+            border-color: var(--primary-color);
+        }
+        
+        .password-input {
+            letter-spacing: 0.5em;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .notification-slide {
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .appointment-card {
+            transition: all 0.3s ease;
+        }
+        
+        .appointment-card:hover {
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 登录界面 -->
+    <div id="loginView" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
+        <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold primary-text mb-2">惟翎门店管理</h1>
+                <p class="text-gray-600">前台工作面板</p>
+            </div>
+            
+            <!-- 员工选择 -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-3">选择员工</label>
+                <div id="staffList" class="grid grid-cols-2 gap-3">
+                    <!-- 动态生成员工列表 -->
+                </div>
+            </div>
+            
+            <!-- 密码输入 -->
+            <div id="passwordSection" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-3">输入4位密码</label>
+                <input 
+                    type="password" 
+                    id="passwordInput" 
+                    class="password-input w-full border-2 primary-border rounded-lg p-4 text-center mb-4 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    maxlength="4"
+                    placeholder="••••"
+                >
+                <div class="flex gap-2">
+                    <button 
+                        onclick="cancelLogin()"
+                        class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-300 transition"
+                    >
+                        返回
+                    </button>
+                    <button 
+                        onclick="submitPassword()"
+                        class="flex-1 primary-bg text-white py-2 rounded-lg font-medium hover:opacity-90 transition"
+                    >
+                        登录
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 主工作面板 -->
+    <div id="mainView" class="hidden min-h-screen bg-gray-50">
+        <!-- 顶部导航 -->
+        <div class="primary-bg text-white shadow-lg">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold">前台工作面板</h1>
+                    <p class="text-blue-100 text-sm">欢迎，<span id="staffName"></span></p>
+                </div>
+                <button 
+                    onclick="logout()"
+                    class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition"
+                >
+                    退出登录
+                </button>
+            </div>
+        </div>
+        
+        <!-- 主要内容 -->
+        <div class="max-w-7xl mx-auto px-6 py-8">
+            <!-- 统计卡片 -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <p class="text-gray-600 text-sm mb-2">今日预约总数</p>
+                    <p class="text-3xl font-bold primary-text" id="totalAppointments">0</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <p class="text-gray-600 text-sm mb-2">已确认</p>
+                    <p class="text-3xl font-bold text-green-600" id="confirmedAppointments">0</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <p class="text-gray-600 text-sm mb-2">待确认</p>
+                    <p class="text-3xl font-bold text-orange-600" id="pendingAppointments">0</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <p class="text-gray-600 text-sm mb-2">已完成</p>
+                    <p class="text-3xl font-bold text-blue-600" id="completedAppointments">0</p>
+                </div>
+            </div>
+            
+            <!-- 快速操作 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <button 
+                    onclick="openQuickAppointmentModal()"
+                    class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition text-left"
+                >
+                    <div class="text-2xl mb-2">➕</div>
+                    <h3 class="font-bold text-gray-800">快速代预约</h3>
+                    <p class="text-sm text-gray-600">为现场患者快速预约</p>
+                </button>
+                <button 
+                    onclick="openAddSlotModal()"
+                    class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition text-left"
+                >
+                    <div class="text-2xl mb-2">🔧</div>
+                    <h3 class="font-bold text-gray-800">手动加号</h3>
+                    <p class="text-sm text-gray-600">紧急情况下加号</p>
+                </button>
+                <button 
+                    onclick="openScheduleModal()"
+                    class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition text-left"
+                >
+                    <div class="text-2xl mb-2">📅</div>
+                    <h3 class="font-bold text-gray-800">号源管理</h3>
+                    <p class="text-sm text-gray-600">查看和管理号源</p>
+                </button>
+            </div>
+            
+            <!-- 预约列表 -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-800">今日预约列表</h2>
+                </div>
+                <div id="appointmentList" class="divide-y divide-gray-200">
+                    <!-- 动态生成预约列表 -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 通知弹窗 -->
+    <div id="notificationContainer" class="fixed top-0 left-0 right-0 z-50 pointer-events-none"></div>
+    
+    <!-- 快速代预约模态框 -->
+    <div id="quickAppointmentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+        <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+            <h2 class="text-2xl font-bold mb-6 primary-text">快速代预约</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">患者姓名</label>
+                    <input 
+                        type="text" 
+                        id="patientName"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        placeholder="请输入患者姓名"
+                    >
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">联系电话</label>
+                    <input 
+                        type="tel" 
+                        id="patientPhone"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        placeholder="请输入联系电话"
+                    >
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">选择医生</label>
+                    <select 
+                        id="doctorSelect"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    >
+                        <option value="">请选择医生</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">选择时间</label>
+                    <select 
+                        id="timeSlotSelect"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    >
+                        <option value="">请选择时间段</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">就诊类型</label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="visitType" value="initial" checked class="mr-2">
+                            <span>初诊</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="visitType" value="followup" class="mr-2">
+                            <span>复查</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">号源类型</label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="slotType" value="normal" checked class="mr-2">
+                            <span>普通号 (¥41)</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="slotType" value="premium" class="mr-2">
+                            <span>特需号 (¥300)</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-3 mt-6">
+                <button 
+                    onclick="closeQuickAppointmentModal()"
+                    class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-300 transition"
+                >
+                    取消
+                </button>
+                <button 
+                    onclick="submitQuickAppointment()"
+                    class="flex-1 primary-bg text-white py-2 rounded-lg font-medium hover:opacity-90 transition"
+                >
+                    确认预约
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 手动加号模态框 -->
+    <div id="addSlotModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+        <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+            <h2 class="text-2xl font-bold mb-6 primary-text">手动加号</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">选择医生</label>
+                    <select 
+                        id="addSlotDoctor"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    >
+                        <option value="">请选择医生</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">选择时间</label>
+                    <select 
+                        id="addSlotTime"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    >
+                        <option value="">请选择时间段</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">加号数量</label>
+                    <input 
+                        type="number" 
+                        id="addSlotCount"
+                        min="1"
+                        max="5"
+                        value="1"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    >
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">加号原因</label>
+                    <textarea 
+                        id="addSlotReason"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        rows="3"
+                        placeholder="请说明加号原因"
+                    ></textarea>
+                </div>
+            </div>
+            
+            <div class="flex gap-3 mt-6">
+                <button 
+                    onclick="closeAddSlotModal()"
+                    class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-300 transition"
+                >
+                    取消
+                </button>
+                <button 
+                    onclick="submitAddSlot()"
+                    class="flex-1 primary-bg text-white py-2 rounded-lg font-medium hover:opacity-90 transition"
+                >
+                    确认加号
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 号源管理模态框 -->
+    <div id="scheduleModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+        <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-2xl max-h-96 overflow-y-auto">
+            <h2 class="text-2xl font-bold mb-6 primary-text">号源管理</h2>
+            
+            <div id="scheduleContent" class="space-y-4">
+                <!-- 动态生成号源信息 -->
+            </div>
+            
+            <div class="flex gap-3 mt-6">
+                <button 
+                    onclick="closeScheduleModal()"
+                    class="flex-1 primary-bg text-white py-2 rounded-lg font-medium hover:opacity-90 transition"
+                >
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟数据
+        const staffData = [
+            { id: 1, name: '张三', role: 'receptionist', password: '1234' },
+            { id: 2, name: '李四', role: 'receptionist', password: '5678' },
+            { id: 3, name: '王五', role: 'receptionist', password: '9012' }
+        ];
+        
+        const doctorData = [
+            { id: 1, name: '医生A', specialty: '视光师' },
+            { id: 2, name: '医生B', specialty: '视光师' },
+            { id: 3, name: '医生C', specialty: '视光师' }
+        ];
+        
+        const timeSlots = [
+            '08:00-08:30', '08:30-09:00', '09:00-09:30', '09:30-10:00',
+            '10:00-10:30', '10:30-11:00', '11:00-11:30', '11:30-12:00',
+            '14:00-14:30', '14:30-15:00', '15:00-15:30', '15:30-16:00',
+            '16:00-16:30', '16:30-17:00', '17:00-17:30', '17:30-18:00'
+        ];
+        
+        let appointments = [
+            { id: 1, patientName: '患者A', phone: '13800000001', doctor: '医生A', time: '08:00-08:30', type: 'initial', status: 'pending', slotType: 'normal' },
+            { id: 2, patientName: '患者B', phone: '13800000002', doctor: '医生B', time: '09:00-09:30', type: 'followup', status: 'confirmed', slotType: 'normal' },
+            { id: 3, patientName: '患者C', phone: '13800000003', doctor: '医生A', time: '10:00-10:30', type: 'initial', status: 'confirmed', slotType: 'premium' }
+        ];
+        
+        let currentStaff = null;
+        let selectedStaffId = null;
+        
+        // 初始化
+        function init() {
+            renderStaffList();
+            updateAppointmentStats();
+            renderAppointmentList();
+            populateDoctorSelects();
+            populateTimeSlots();
+        }
+        
+        // 渲染员工列表
+        function renderStaffList() {
+            const staffList = document.getElementById('staffList');
+            staffList.innerHTML = staffData.map(staff => `
+                <button 
+                    onclick="selectStaff(${staff.id})"
+                    class="bg-blue-50 border-2 primary-border rounded-lg p-4 text-center hover:bg-blue-100 transition"
+                >
+                    <div class="text-2xl mb-2">👤</div>
+                    <p class="font-medium text-gray-800">${staff.name}</p>
+                </button>
+            `).join('');
+        }
+        
+        // 选择员工
+        function selectStaff(staffId) {
+            selectedStaffId = staffId;
+            document.getElementById('passwordSection').classList.remove('hidden');
+            document.getElementById('passwordInput').focus();
+        }
+        
+        // 取消登录
+        function cancelLogin() {
+            selectedStaffId = null;
+            document.getElementById('passwordSection').classList.add('hidden');
+            document.getElementById('passwordInput').value = '';
+        }
+        
+        // 提交密码
+        function submitPassword() {
+            const password = document.getElementById('passwordInput').value;
+            const staff = staffData.find(s => s.id === selectedStaffId);
+            
+            if (password === staff.password) {
+                currentStaff = staff;
+                document.getElementById('staffName').textContent = staff.name;
+                document.getElementById('loginView').classList.add('hidden');
+                document.getElementById('mainView').classList.remove('hidden');
+                document.getElementById('passwordInput').value = '';
+            } else {
+                showNotification('密码错误，请重试', 'error');
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+        
+        // 退出登录
+        function logout() {
+            currentStaff = null;
+            selectedStaffId = null;
+            document.getElementById('mainView').classList.add('hidden');
+            document.getElementById('loginView').classList.remove('hidden');
+            document.getElementById('passwordInput').value = '';
+            cancelLogin();
+        }
+        
+        // 更新预约统计
+        function updateAppointmentStats() {
+            const total = appointments.length;
+            const confirmed = appointments.filter(a => a.status === 'confirmed').length;
+            const pending = appointments.filter(a => a.status === 'pending').length;
+            const completed = appointments.filter(a => a.status === 'completed').length;
+            
+            document.getElementById('totalAppointments').textContent = total;
+            document.getElementById('confirmedAppointments').textContent = confirmed;
+            document.getElementById('pendingAppointments').textContent = pending;
+            document.getElementById('completedAppointments').textContent = completed;
+        }
+        
+        // 渲染预约列表
+        function renderAppointmentList() {
+            const appointmentList = document.getElementById('appointmentList');
+            appointmentList.innerHTML = appointments.map(apt => `
+                <div class="appointment-card p-6 flex justify-between items-center">
+                    <div class="flex-1">
+                        <h3 class="font-bold text-gray-800">${apt.patientName}</h3>
+                        <p class="text-sm text-gray-600">医生: ${apt.doctor} | 时间: ${apt.time}</p>
+                        <p class="text-sm text-gray-600">类型: ${apt.type === 'initial' ? '初诊' : '复查'} | 号源: ${apt.slotType === 'normal' ? '普通号' : '特需号'}</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="px-3 py-1 rounded-full text-sm font-medium ${
+                            apt.status === 'pending' ? 'bg-orange-100 text-orange-700' :
+                            apt.status === 'confirmed' ? 'bg-green-100 text-green-700' :
+                            'bg-blue-100 text-blue-700'
+                        }">
+                            ${apt.status === 'pending' ? '待确认' : apt.status === 'confirmed' ? '已确认' : '已完成'}
+                        </span>
+                        ${apt.status === 'pending' ? `
+                            <button 
+                                onclick="confirmAppointment(${apt.id})"
+                                class="primary-bg text-white px-4 py-2 rounded-lg text-sm hover:opacity-90 transition"
+                            >
+                                确认
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 确认预约
+        function confirmAppointment(appointmentId) {
+            const apt = appointments.find(a => a.id === appointmentId);
+            if (apt) {
+                apt.status = 'confirmed';
+                renderAppointmentList();
+                updateAppointmentStats();
+                showNotification(`已确认 ${apt.patientName} 的预约`, 'success');
+            }
+        }
+        
+        // 填充医生选择框
+        function populateDoctorSelects() {
+            const selects = ['doctorSelect', 'addSlotDoctor'];
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">请选择医生</option>' + 
+                    doctorData.map(doc => `<option value="${doc.id}">${doc.name}</option>`).join('');
+            });
+        }
+        
+        // 填充时间段
+        function populateTimeSlots() {
+            const selects = ['timeSlotSelect', 'addSlotTime'];
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">请选择时间段</option>' + 
+                    timeSlots.map(slot => `<option value="${slot}">${slot}</option>`).join('');
+            });
+        }
+        
+        // 打开快速代预约模态框
+        function openQuickAppointmentModal() {
+            document.getElementById('quickAppointmentModal').classList.remove('hidden');
+        }
+        
+        // 关闭快速代预约模态框
+        function closeQuickAppointmentModal() {
+            document.getElementById('quickAppointmentModal').classList.add('hidden');
+            document.getElementById('patientName').value = '';
+            document.getElementById('patientPhone').value = '';
+        }
+        
+        // 提交快速代预约
+        function submitQuickAppointment() {
+            const name = document.getElementById('patientName').value;
+            const phone = document.getElementById('patientPhone').value;
+            const doctorId = document.getElementById('doctorSelect').value;
+            const timeSlot = document.getElementById('timeSlotSelect').value;
+            const visitType = document.querySelector('input[name="visitType"]:checked').value;
+            const slotType = document.querySelector('input[name="slotType"]:checked').value;
+            
+            if (!name || !phone || !doctorId || !timeSlot) {
+                showNotification('请填写完整信息', 'error');
+                return;
+            }
+            
+            const doctor = doctorData.find(d => d.id == doctorId);
+            const newAppointment = {
+                id: Math.max(...appointments.map(a => a.id), 0) + 1,
+                patientName: name,
+                phone: phone,
+                doctor: doctor.name,
+                time: timeSlot,
+                type: visitType,
+                status: 'confirmed',
+                slotType: slotType
+            };
+            
+            appointments.push(newAppointment);
+            renderAppointmentList();
+            updateAppointmentStats();
+            closeQuickAppointmentModal();
+            showNotification(`已为 ${name} 创建预约`, 'success');
+        }
+        
+        // 打开手动加号模态框
+        function openAddSlotModal() {
+            document.getElementById('addSlotModal').classList.remove('hidden');
+        }
+        
+        // 关闭手动加号模态框
+        function closeAddSlotModal() {
+            document.getElementById('addSlotModal').classList.add('hidden');
+        }
+        
+        // 提交手动加号
+        function submitAddSlot() {
+            const doctorId = document.getElementById('addSlotDoctor').value;
+            const timeSlot = document.getElementById('addSlotTime').value;
+            const count = document.getElementById('addSlotCount').value;
+            const reason = document.getElementById('addSlotReason').value;
+            
+            if (!doctorId || !timeSlot || !reason) {
+                showNotification('请填写完整信息', 'error');
+                return;
+            }
+            
+            const doctor = doctorData.find(d => d.id == doctorId);
+            showNotification(`已为 ${doctor.name} 在 ${timeSlot} 加号 ${count} 个，原因: ${reason}`, 'success');
+            closeAddSlotModal();
+        }
+        
+        // 打开号源管理模态框
+        function openScheduleModal() {
+            const scheduleContent = document.getElementById('scheduleContent');
+            let html = '';
+            
+            doctorData.forEach(doctor => {
+                html += `<div class="border border-gray-200 rounded-lg p-4">
+                    <h3 class="font-bold text-gray-800 mb-3">${doctor.name}</h3>
+                    <div class="grid grid-cols-4 gap-2">`;
+                
+                timeSlots.forEach(slot => {
+                    const count = Math.floor(Math.random() * 4);
+                    const isFull = count === 0;
+                    html += `<div class="text-center p-2 rounded ${isFull ? 'bg-red-100' : 'bg-green-100'}">
+                        <p class="text-xs font-medium">${slot}</p>
+                        <p class="text-sm font-bold ${isFull ? 'text-red-700' : 'text-green-700'}">${isFull ? '已满' : count + '个'}</p>
+                    </div>`;
+                });
+                
+                html += `</div></div>`;
+            });
+            
+            scheduleContent.innerHTML = html;
+            document.getElementById('scheduleModal').classList.remove('hidden');
+        }
+        
+        // 关闭号源管理模态框
+        function closeScheduleModal() {
+            document.getElementById('scheduleModal').classList.add('hidden');
+        }
+        
+        // 显示通知
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = `notification-slide pointer-events-auto mx-4 mt-4 p-4 rounded-lg text-white font-medium ${
+                type === 'success' ? 'bg-green-500' :
+                type === 'error' ? 'bg-red-500' :
+                'primary-bg'
+            }`;
+            notification.textContent = message;
+            
+            container.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        // 页面加载时初始化
+        window.addEventListener('load', init);
+        
+        // 密码输入框回车提交
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    submitPassword();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

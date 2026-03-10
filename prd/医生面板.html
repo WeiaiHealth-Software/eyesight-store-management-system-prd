@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>惟翎门店管理系统 - 医生面板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+        }
+        
+        .primary-bg {
+            background-color: var(--primary-color);
+        }
+        
+        .primary-text {
+            color: var(--primary-color);
+        }
+        
+        .primary-border {
+            border-color: var(--primary-color);
+        }
+        
+        .password-input {
+            letter-spacing: 0.5em;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .patient-card {
+            background: white;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .patient-card:hover {
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .patient-card.active {
+            background: #eff6ff;
+            border-left-width: 6px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-waiting {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-consulting {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-completed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .info-item {
+            background: #f9fafb;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        
+        .info-label {
+            color: #999;
+            margin-bottom: 2px;
+        }
+        
+        .info-value {
+            color: #1f2937;
+            font-weight: 600;
+        }
+        
+        .action-button {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-button-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .action-button-primary:hover {
+            opacity: 0.9;
+        }
+        
+        .action-button-secondary {
+            background: #e5e7eb;
+            color: #1f2937;
+        }
+        
+        .action-button-secondary:hover {
+            background: #d1d5db;
+        }
+        
+        .quick-template {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-template:hover {
+            background: #eff6ff;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 登录界面 -->
+    <div id="loginView" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
+        <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold primary-text mb-2">惟翎门店管理</h1>
+                <p class="text-gray-600">医生工作面板</p>
+            </div>
+            
+            <!-- 医生选择 -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-3">选择医生</label>
+                <div id="doctorList" class="grid grid-cols-2 gap-3">
+                    <!-- 动态生成医生列表 -->
+                </div>
+            </div>
+            
+            <!-- 密码输入 -->
+            <div id="passwordSection" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-3">输入4位密码</label>
+                <input 
+                    type="password" 
+                    id="passwordInput" 
+                    class="password-input w-full border-2 primary-border rounded-lg p-4 text-center mb-4 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    maxlength="4"
+                    placeholder="••••"
+                >
+                <div class="flex gap-2">
+                    <button 
+                        onclick="cancelLogin()"
+                        class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-300 transition"
+                    >
+                        返回
+                    </button>
+                    <button 
+                        onclick="submitPassword()"
+                        class="flex-1 primary-bg text-white py-2 rounded-lg font-medium hover:opacity-90 transition"
+                    >
+                        登录
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 主工作面板 -->
+    <div id="mainView" class="hidden min-h-screen bg-gray-50">
+        <!-- 顶部导航 -->
+        <div class="primary-bg text-white shadow-lg sticky top-0 z-10">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold">医生工作面板</h1>
+                    <p class="text-blue-100 text-sm">欢迎，<span id="doctorName"></span></p>
+                </div>
+                <button 
+                    onclick="logout()"
+                    class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition"
+                >
+                    退出登录
+                </button>
+            </div>
+        </div>
+        
+        <!-- 主要内容 -->
+        <div class="max-w-7xl mx-auto px-6 py-8">
+            <!-- 统计卡片 -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <p class="text-gray-600 text-sm mb-2">今日接诊总数</p>
+                    <p class="text-3xl font-bold primary-text" id="totalPatients">0</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <p class="text-gray-600 text-sm mb-2">待接诊</p>
+                    <p class="text-3xl font-bold text-orange-600" id="waitingPatients">0</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <p class="text-gray-600 text-sm mb-2">接诊中</p>
+                    <p class="text-3xl font-bold text-green-600" id="consultingPatients">0</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <p class="text-gray-600 text-sm mb-2">已完成</p>
+                    <p class="text-3xl font-bold text-blue-600" id="completedPatients">0</p>
+                </div>
+            </div>
+            
+            <!-- 主要内容区域 -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- 患者队列 -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h2 class="text-xl font-bold text-gray-800">今日接诊队列</h2>
+                        </div>
+                        <div id="patientQueue" class="p-6">
+                            <!-- 动态生成患者列表 -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 患者详情 -->
+                <div class="bg-white rounded-lg shadow">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-xl font-bold text-gray-800">患者详情</h2>
+                    </div>
+                    <div id="patientDetail" class="p-6">
+                        <p class="text-gray-500 text-center py-8">请选择患者查看详情</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 一键开单模态框 -->
+    <div id="prescriptionModal" class="modal-overlay hidden" onclick="closePrescriptionModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">一键开单</h2>
+                <button onclick="closePrescriptionModal()" class="text-gray-400 text-2xl">×</button>
+            </div>
+            
+            <!-- 选项卡 -->
+            <div class="flex gap-2 mb-6 border-b border-gray-200">
+                <button 
+                    onclick="switchTab('prescription')"
+                    class="px-4 py-2 font-medium border-b-2 primary-border primary-text"
+                >
+                    处方
+                </button>
+                <button 
+                    onclick="switchTab('examination')"
+                    class="px-4 py-2 font-medium border-b-2 border-transparent text-gray-600 hover:text-gray-800"
+                >
+                    检查单
+                </button>
+                <button 
+                    onclick="switchTab('refraction')"
+                    class="px-4 py-2 font-medium border-b-2 border-transparent text-gray-600 hover:text-gray-800"
+                >
+                    验光单
+                </button>
+            </div>
+            
+            <!-- 处方标签页 -->
+            <div id="prescriptionTab" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">快速模板</label>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <div class="quick-template" onclick="insertTemplate('近视矫正')">近视矫正</div>
+                        <div class="quick-template" onclick="insertTemplate('散光矫正')">散光矫正</div>
+                        <div class="quick-template" onclick="insertTemplate('老花镜')">老花镜</div>
+                        <div class="quick-template" onclick="insertTemplate('隐形眼镜')">隐形眼镜</div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">处方内容</label>
+                    <textarea 
+                        id="prescriptionContent"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        rows="6"
+                        placeholder="输入处方内容..."
+                    ></textarea>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button 
+                        onclick="closePrescriptionModal()"
+                        class="flex-1 action-button action-button-secondary"
+                    >
+                        取消
+                    </button>
+                    <button 
+                        onclick="submitPrescription()"
+                        class="flex-1 action-button action-button-primary"
+                    >
+                        生成处方
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 检查单标签页 -->
+            <div id="examinationTab" class="hidden space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">检查项目</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-2">
+                            <span class="text-sm">视力检查</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-2">
+                            <span class="text-sm">眼压检查</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-2">
+                            <span class="text-sm">眼底检查</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-2">
+                            <span class="text-sm">屈光检查</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">备注</label>
+                    <textarea 
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        rows="4"
+                        placeholder="输入检查备注..."
+                    ></textarea>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button 
+                        onclick="closePrescriptionModal()"
+                        class="flex-1 action-button action-button-secondary"
+                    >
+                        取消
+                    </button>
+                    <button 
+                        onclick="submitExamination()"
+                        class="flex-1 action-button action-button-primary"
+                    >
+                        生成检查单
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 验光单标签页 -->
+            <div id="refractionTab" class="hidden space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">左眼球镜</label>
+                        <input type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="-3.00">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">右眼球镜</label>
+                        <input type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="-3.00">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">左眼柱镜</label>
+                        <input type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="-0.50">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">右眼柱镜</label>
+                        <input type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="-0.50">
+                    </div>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button 
+                        onclick="closePrescriptionModal()"
+                        class="flex-1 action-button action-button-secondary"
+                    >
+                        取消
+                    </button>
+                    <button 
+                        onclick="submitRefraction()"
+                        class="flex-1 action-button action-button-primary"
+                    >
+                        生成验光单
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟数据
+        const doctorData = [
+            { id: 1, name: '医生A', specialty: '视光师', password: '1234' },
+            { id: 2, name: '医生B', specialty: '视光师', password: '5678' },
+            { id: 3, name: '医生C', specialty: '视光师', password: '9012' }
+        ];
+        
+        const patientQueue = [
+            { id: 1, name: '患者A', appointmentTime: '08:00-08:30', visitType: 'initial', status: 'waiting', history: '无', needsMirror: false, needsFollowup: false },
+            { id: 2, name: '患者B', appointmentTime: '08:30-09:00', visitType: 'followup', status: 'waiting', history: '近视', needsMirror: true, needsFollowup: true },
+            { id: 3, name: '患者C', appointmentTime: '09:00-09:30', visitType: 'initial', status: 'waiting', history: '散光', needsMirror: false, needsFollowup: false }
+        ];
+        
+        let currentDoctor = null;
+        let selectedPatientId = null;
+        let selectedStaffId = null;
+        
+        // 初始化
+        function init() {
+            renderDoctorList();
+            updatePatientStats();
+            renderPatientQueue();
+        }
+        
+        // 渲染医生列表
+        function renderDoctorList() {
+            const doctorList = document.getElementById('doctorList');
+            doctorList.innerHTML = doctorData.map(doctor => `
+                <button 
+                    onclick="selectDoctor(${doctor.id})"
+                    class="bg-blue-50 border-2 primary-border rounded-lg p-4 text-center hover:bg-blue-100 transition"
+                >
+                    <div class="text-2xl mb-2">👨‍⚕️</div>
+                    <p class="font-medium text-gray-800">${doctor.name}</p>
+                </button>
+            `).join('');
+        }
+        
+        // 选择医生
+        function selectDoctor(doctorId) {
+            selectedStaffId = doctorId;
+            document.getElementById('passwordSection').classList.remove('hidden');
+            document.getElementById('passwordInput').focus();
+        }
+        
+        // 取消登录
+        function cancelLogin() {
+            selectedStaffId = null;
+            document.getElementById('passwordSection').classList.add('hidden');
+            document.getElementById('passwordInput').value = '';
+        }
+        
+        // 提交密码
+        function submitPassword() {
+            const password = document.getElementById('passwordInput').value;
+            const doctor = doctorData.find(d => d.id === selectedStaffId);
+            
+            if (password === doctor.password) {
+                currentDoctor = doctor;
+                document.getElementById('doctorName').textContent = doctor.name;
+                document.getElementById('loginView').classList.add('hidden');
+                document.getElementById('mainView').classList.remove('hidden');
+                document.getElementById('passwordInput').value = '';
+            } else {
+                alert('密码错误，请重试');
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+        
+        // 退出登录
+        function logout() {
+            currentDoctor = null;
+            selectedStaffId = null;
+            selectedPatientId = null;
+            document.getElementById('mainView').classList.add('hidden');
+            document.getElementById('loginView').classList.remove('hidden');
+            document.getElementById('passwordInput').value = '';
+            cancelLogin();
+        }
+        
+        // 更新患者统计
+        function updatePatientStats() {
+            const total = patientQueue.length;
+            const waiting = patientQueue.filter(p => p.status === 'waiting').length;
+            const consulting = patientQueue.filter(p => p.status === 'consulting').length;
+            const completed = patientQueue.filter(p => p.status === 'completed').length;
+            
+            document.getElementById('totalPatients').textContent = total;
+            document.getElementById('waitingPatients').textContent = waiting;
+            document.getElementById('consultingPatients').textContent = consulting;
+            document.getElementById('completedPatients').textContent = completed;
+        }
+        
+        // 渲染患者队列
+        function renderPatientQueue() {
+            const patientQueue_el = document.getElementById('patientQueue');
+            patientQueue_el.innerHTML = patientQueue.map(patient => `
+                <div 
+                    class="patient-card ${selectedPatientId === patient.id ? 'active' : ''}"
+                    onclick="selectPatient(${patient.id})"
+                >
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h3 class="font-bold text-gray-800 text-lg">${patient.name}</h3>
+                            <p class="text-sm text-gray-600">${patient.appointmentTime}</p>
+                        </div>
+                        <span class="status-badge ${
+                            patient.status === 'waiting' ? 'status-waiting' :
+                            patient.status === 'consulting' ? 'status-consulting' :
+                            'status-completed'
+                        }">
+                            ${patient.status === 'waiting' ? '待接诊' : patient.status === 'consulting' ? '接诊中' : '已完成'}
+                        </span>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">就诊类型</div>
+                            <div class="info-value">${patient.visitType === 'initial' ? '初诊' : '复查'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">既往病史</div>
+                            <div class="info-value">${patient.history || '无'}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 选择患者
+        function selectPatient(patientId) {
+            selectedPatientId = patientId;
+            renderPatientQueue();
+            renderPatientDetail();
+        }
+        
+        // 渲染患者详情
+        function renderPatientDetail() {
+            const patient = patientQueue.find(p => p.id === selectedPatientId);
+            if (!patient) return;
+            
+            const detailHtml = `
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">患者姓名</p>
+                        <p class="font-bold text-gray-800">${patient.name}</p>
+                    </div>
+                    
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">预约时间</p>
+                        <p class="font-bold text-gray-800">${patient.appointmentTime}</p>
+                    </div>
+                    
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">就诊类型</p>
+                        <p class="font-bold text-gray-800">${patient.visitType === 'initial' ? '初诊' : '复查'}</p>
+                    </div>
+                    
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">既往病史</p>
+                        <p class="font-bold text-gray-800">${patient.history || '无'}</p>
+                    </div>
+                    
+                    <div>
+                        <p class="text-sm text-gray-600 mb-2">其他信息</p>
+                        <div class="space-y-1 text-sm">
+                            <p>是否带镜: ${patient.needsMirror ? '是' : '否'}</p>
+                            <p>是否需复查: ${patient.needsFollowup ? '是' : '否'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2 pt-4">
+                        <button 
+                            onclick="startConsultation(${patient.id})"
+                            class="flex-1 action-button action-button-primary"
+                        >
+                            开始接诊
+                        </button>
+                        <button 
+                            onclick="openPrescriptionModal()"
+                            class="flex-1 action-button action-button-primary"
+                        >
+                            一键开单
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('patientDetail').innerHTML = detailHtml;
+        }
+        
+        // 开始接诊
+        function startConsultation(patientId) {
+            const patient = patientQueue.find(p => p.id === patientId);
+            if (patient) {
+                patient.status = 'consulting';
+                updatePatientStats();
+                renderPatientQueue();
+                renderPatientDetail();
+                alert(`已开始接诊 ${patient.name}`);
+            }
+        }
+        
+        // 打开一键开单模态框
+        function openPrescriptionModal() {
+            document.getElementById('prescriptionModal').classList.remove('hidden');
+        }
+        
+        // 关闭一键开单模态框
+        function closePrescriptionModal(event) {
+            if (event && event.target.id !== 'prescriptionModal') return;
+            document.getElementById('prescriptionModal').classList.add('hidden');
+        }
+        
+        // 切换标签页
+        function switchTab(tab) {
+            document.getElementById('prescriptionTab').classList.add('hidden');
+            document.getElementById('examinationTab').classList.add('hidden');
+            document.getElementById('refractionTab').classList.add('hidden');
+            
+            if (tab === 'prescription') {
+                document.getElementById('prescriptionTab').classList.remove('hidden');
+            } else if (tab === 'examination') {
+                document.getElementById('examinationTab').classList.remove('hidden');
+            } else if (tab === 'refraction') {
+                document.getElementById('refractionTab').classList.remove('hidden');
+            }
+            
+            // 更新标签页按钮样式
+            document.querySelectorAll('[onclick^="switchTab"]').forEach(btn => {
+                btn.classList.remove('primary-border', 'primary-text');
+                btn.classList.add('border-transparent', 'text-gray-600');
+            });
+            event.target.classList.remove('border-transparent', 'text-gray-600');
+            event.target.classList.add('primary-border', 'primary-text');
+        }
+        
+        // 插入模板
+        function insertTemplate(template) {
+            const textarea = document.getElementById('prescriptionContent');
+            textarea.value += (textarea.value ? '\n' : '') + template;
+        }
+        
+        // 提交处方
+        function submitPrescription() {
+            const content = document.getElementById('prescriptionContent').value;
+            if (!content) {
+                alert('请输入处方内容');
+                return;
+            }
+            alert('处方已生成');
+            closePrescriptionModal();
+        }
+        
+        // 提交检查单
+        function submitExamination() {
+            alert('检查单已生成');
+            closePrescriptionModal();
+        }
+        
+        // 提交验光单
+        function submitRefraction() {
+            alert('验光单已生成');
+            closePrescriptionModal();
+        }
+        
+        // 页面加载时初始化
+        window.addEventListener('load', init);
+        
+        // 密码输入框回车提交
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    submitPassword();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
