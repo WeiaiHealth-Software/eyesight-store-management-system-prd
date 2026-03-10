@@ -150,6 +150,13 @@
                     </div>
                 </div>
 
+                <!-- 动态预约提醒 (仅当有预约时显示) -->
+                <div id="home-appointments-container" class="hidden px-4 mt-6">
+                    <div class="flex overflow-x-auto hide-scrollbar gap-3 snap-x snap-mandatory" id="home-appointments-list">
+                        <!-- JS生成预约卡片 -->
+                    </div>
+                </div>
+
                 <!-- 核心入口 -->
                 <div class="px-4 mt-6">
                     <div onclick="navigateTo('page-store-select')" class="bg-white rounded-2xl p-6 shadow-md flex items-center justify-between active:bg-gray-50 transition-colors cursor-pointer border border-gray-100">
@@ -299,17 +306,19 @@
                 <!-- 菜单列表 -->
                 <div class="px-4 -mt-4 space-y-3">
                     
-                    <!-- 我的预约 (动态列表) -->
-                    <div class="space-y-3" id="my-appointments-list">
-                         <!-- 默认无数据状态 -->
-                        <div class="bg-white rounded-xl shadow-sm p-8 flex flex-col items-center justify-center text-gray-400">
-                            <i class="fas fa-calendar-times text-4xl mb-3 opacity-50"></i>
-                            <p class="text-sm">暂无预约记录</p>
-                        </div>
-                    </div>
-
                     <!-- 常用功能组 -->
                     <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                        <!-- 我的预约 (新增) -->
+                        <div class="menu-item border-b border-gray-50 p-4 flex justify-between items-center active:bg-gray-50" onclick="showToast('点击查看所有预约')">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-calendar-check text-blue-500 w-6 text-center"></i>
+                                <span class="text-sm text-gray-700">我的预约</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-gray-400" id="profile-apt-count"></span>
+                                <i class="fas fa-chevron-right text-gray-300 text-xs"></i>
+                            </div>
+                        </div>
                         <div class="menu-item border-b border-gray-50 p-4 flex justify-between items-center active:bg-gray-50" onclick="showToast('功能开发中')">
                             <div class="flex items-center gap-3">
                                 <i class="fas fa-users text-orange-400 w-6 text-center"></i>
@@ -576,6 +585,9 @@
                 document.getElementById('page-login').classList.add('hidden');
                 document.getElementById('page-home').classList.remove('hidden');
                 document.getElementById('tab-bar').classList.remove('hidden');
+                
+                // 初始化首页卡片拖拽滚动
+                enableDragScroll('home-appointments-list');
             }, 500);
         }
 
@@ -871,49 +883,65 @@
         function executeAppointment() {
             // 添加到我的预约列表
             myAppointments.unshift(pendingAppointment);
-            renderMyAppointments();
+            
+            // 更新首页预约卡片
+            renderHomeAppointments();
+            // 更新个人中心数量标记
+            updateProfileBadge();
             
             closeConfirmModal();
             showToast('预约成功！');
             
             setTimeout(() => {
-                // 跳转到个人中心 -> 我的预约
+                // 跳转到首页查看预约卡片
                 document.getElementById('page-appointment').classList.add('hidden');
-                document.getElementById('page-profile').classList.remove('hidden');
-                switchTab('profile');
+                document.getElementById('page-home').classList.remove('hidden');
+                switchTab('home');
             }, 500);
         }
 
-        function renderMyAppointments() {
-            const container = document.getElementById('my-appointments-list');
+        function renderHomeAppointments() {
+            const container = document.getElementById('home-appointments-container');
+            const list = document.getElementById('home-appointments-list');
+            
             if (myAppointments.length === 0) {
-                container.innerHTML = `
-                    <div class="bg-white rounded-xl shadow-sm p-8 flex flex-col items-center justify-center text-gray-400">
-                        <i class="fas fa-calendar-times text-4xl mb-3 opacity-50"></i>
-                        <p class="text-sm">暂无预约记录</p>
-                    </div>
-                `;
+                container.classList.add('hidden');
                 return;
             }
-
-            container.innerHTML = myAppointments.map(apt => `
-                <div class="bg-white rounded-xl shadow-sm p-4 border border-gray-100 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 bg-medical-100 text-medical-600 text-[10px] px-2 py-1 rounded-bl-lg">待就诊</div>
-                    <div class="flex justify-between items-start mb-3">
+            
+            container.classList.remove('hidden');
+            list.innerHTML = myAppointments.map(apt => `
+                <div class="snap-center shrink-0 w-[280px] bg-white rounded-xl p-4 shadow-md border border-medical-100 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-medical-500 text-white text-[10px] px-2 py-1 rounded-bl-lg">
+                        ${apt.type === 'vip' ? '特需号' : '待就诊'}
+                    </div>
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-full bg-medical-50 flex items-center justify-center text-medical-600 font-bold text-sm border border-medical-100">
+                            ${apt.doctor.substr(0, 1)}
+                        </div>
                         <div>
-                            <h3 class="font-bold text-gray-800 text-lg">${apt.doctor}</h3>
+                            <h4 class="font-bold text-gray-800 text-sm">${apt.doctor}</h4>
                             <p class="text-xs text-gray-500">${apt.store}</p>
                         </div>
-                        <div class="text-right mt-6">
-                            <span class="text-lg font-bold text-medical-600">${apt.time.split('-')[0]}</span>
-                        </div>
                     </div>
-                    <div class="border-t border-gray-50 pt-3 flex justify-between items-center text-sm">
-                        <span class="text-gray-500"><i class="far fa-calendar mr-1"></i> ${apt.date}</span>
-                        <span class="font-medium text-gray-700">¥${apt.price}</span>
+                    <div class="bg-gray-50 rounded-lg p-2 flex justify-between items-center text-xs">
+                        <span class="font-bold text-medical-600 text-sm">${apt.time.split('-')[0]}</span>
+                        <span class="text-gray-500">${apt.date}</span>
                     </div>
                 </div>
             `).join('');
+            
+            // 只有多于1个时才需要 snap 效果容器宽度调整 (当前用 flex gap 自动处理)
+        }
+
+        function updateProfileBadge() {
+            const el = document.getElementById('profile-apt-count');
+            if (myAppointments.length > 0) {
+                el.innerText = `${myAppointments.length}个待就诊`;
+                el.classList.add('text-medical-600', 'font-bold');
+            } else {
+                el.innerText = '';
+            }
         }
 
         // 已移除重复的 selectDate 定义，逻辑合并到上方
