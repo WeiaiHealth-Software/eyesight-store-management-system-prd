@@ -263,6 +263,10 @@
                                 <span class="text-gray-500 text-sm">挂号费用</span>
                                 <span class="font-bold text-orange-500" id="confirm-price"></span>
                             </div>
+                            <div class="flex justify-between items-center pt-1">
+                                <span class="text-gray-500 text-sm">号源类型</span>
+                                <span id="confirm-type"></span>
+                            </div>
                         </div>
 
                         <div class="flex gap-3">
@@ -435,6 +439,40 @@
     </div>
 
     <script>
+        // === 通用：PC端鼠标拖拽滚动模拟 ===
+        function enableDragScroll(elementId) {
+            const slider = document.getElementById(elementId);
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            slider.addEventListener('mousedown', (e) => {
+                isDown = true;
+                slider.classList.add('cursor-grabbing');
+                slider.classList.remove('cursor-pointer'); // 临时移除 pointer 避免误触
+                startX = e.pageX - slider.offsetLeft;
+                scrollLeft = slider.scrollLeft;
+            });
+
+            slider.addEventListener('mouseleave', () => {
+                isDown = false;
+                slider.classList.remove('cursor-grabbing');
+            });
+
+            slider.addEventListener('mouseup', () => {
+                isDown = false;
+                slider.classList.remove('cursor-grabbing');
+            });
+
+            slider.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - slider.offsetLeft;
+                const walk = (x - startX) * 2; // 滚动速度系数
+                slider.scrollLeft = scrollLeft - walk;
+            });
+        }
+
         // === 状态管理 ===
         let currentStore = '';
         let selectedDateIndex = 0;
@@ -653,6 +691,11 @@
             renderDates();
             // 默认选中第一个日期
             selectDate(0);
+            
+            // 启用日期栏的拖拽滚动
+            setTimeout(() => {
+                enableDragScroll('date-scroll-container');
+            }, 100);
         }
 
         function renderDates() {
@@ -733,7 +776,7 @@
                     
                     const btnStatus = isFull 
                         ? `<button disabled class="bg-gray-100 text-gray-400 px-4 py-1.5 rounded-full text-xs font-bold cursor-not-allowed">已满</button>`
-                        : `<button onclick="triggerConfirm('${slot.time}', ${slot.price})" class="bg-medical-600 text-white border border-medical-200 px-4 py-1.5 rounded-full text-xs font-bold">余 ${slot.remaining}</button>`;
+                        : `<button onclick="triggerConfirm('${slot.time}', ${slot.price}, '${slot.type}')" class="bg-medical-50 text-medical-600 border border-medical-200 px-4 py-1.5 rounded-full text-xs font-bold active:bg-medical-600 active:text-white transition-colors">余 ${slot.remaining}</button>`;
                     
                     // 特需号额外显示“上午/下午”
                     const periodLabel = slot.period ? `<span class="text-gray-400 text-xs mr-2 font-normal">${slot.period}</span>` : '';
@@ -777,7 +820,9 @@
         }
         
         // === 预约确认逻辑 ===
-        function triggerConfirm(time, price) {
+        function triggerConfirm(time, price, type) {
+            console.log('Triggering confirm with:', { time, price, type });
+            
             const dates = getNextTwoWeeks();
             const dateStr = dates[selectedDateIndex].fullDate;
             
@@ -786,7 +831,8 @@
                 doctor: selectedDoctorName,
                 date: dateStr,
                 time: time,
-                price: price
+                price: price,
+                type: type
             };
 
             // 填充弹窗数据
@@ -794,6 +840,13 @@
             document.getElementById('confirm-date').innerText = pendingAppointment.date;
             document.getElementById('confirm-time').innerText = pendingAppointment.time;
             document.getElementById('confirm-price').innerText = `¥${pendingAppointment.price}`;
+            
+            const typeEl = document.getElementById('confirm-type');
+            if (type === 'vip') {
+                typeEl.innerHTML = '<span class="bg-orange-100 text-orange-600 text-[10px] px-2 py-0.5 rounded font-bold">特需号</span>';
+            } else {
+                typeEl.innerHTML = '<span class="bg-medical-100 text-medical-600 text-[10px] px-2 py-0.5 rounded font-bold">普通号</span>';
+            }
 
             // 显示弹窗
             const modal = document.getElementById('modal-confirm');
