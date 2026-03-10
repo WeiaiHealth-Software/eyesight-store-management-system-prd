@@ -304,7 +304,7 @@
                 </div>
 
                 <!-- 菜单列表 -->
-                <div class="px-4 -mt-4 space-y-3">
+                <div class="p-2 mt-4 space-y-3">
                     
                     <!-- 常用功能组 -->
                     <div class="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -788,7 +788,7 @@
                     
                     const btnStatus = isFull 
                         ? `<button disabled class="bg-gray-100 text-gray-400 px-4 py-1.5 rounded-full text-xs font-bold cursor-not-allowed">已满</button>`
-                        : `<button onclick="triggerConfirm('${slot.time}', ${slot.price}, '${slot.type}')" class="bg-medical-50 text-medical-600 border border-medical-200 px-4 py-1.5 rounded-full text-xs font-bold active:bg-medical-600 active:text-white transition-colors">余 ${slot.remaining}</button>`;
+                        : `<button onclick="triggerConfirm('${slot.time}', ${slot.price}, '${slot.type}')" class="bg-medical-600 text-white border border-medical-200 px-4 py-1.5 rounded-full text-xs font-bold">余 ${slot.remaining}</button>`;
                     
                     // 特需号额外显示“上午/下午”
                     const periodLabel = slot.period ? `<span class="text-gray-400 text-xs mr-2 font-normal">${slot.period}</span>` : '';
@@ -910,8 +910,12 @@
             }
             
             container.classList.remove('hidden');
+            
+            // 样式调整：移除 gap 以便实现单卡片轮播效果
+            list.classList.remove('gap-3');
+            
             list.innerHTML = myAppointments.map(apt => `
-                <div class="snap-center shrink-0 w-[280px] bg-white rounded-xl p-4 shadow-md border border-medical-100 relative overflow-hidden">
+                <div class="snap-center shrink-0 min-w-full bg-white rounded-xl p-4 border border-medical-100 relative overflow-hidden">
                     <div class="absolute top-0 right-0 bg-medical-500 text-white text-[10px] px-2 py-1 rounded-bl-lg">
                         ${apt.type === 'vip' ? '特需号' : '待就诊'}
                     </div>
@@ -931,7 +935,52 @@
                 </div>
             `).join('');
             
-            // 只有多于1个时才需要 snap 效果容器宽度调整 (当前用 flex gap 自动处理)
+            // 处理轮播指示点
+            handleAppointmentDots(container, list);
+        }
+
+        function handleAppointmentDots(container, list) {
+            let dotsContainer = document.getElementById('home-appointments-dots');
+            
+            // 如果只有一个预约，移除指示点并清理监听
+            if (myAppointments.length <= 1) {
+                if (dotsContainer) dotsContainer.remove();
+                list.onscroll = null;
+                return;
+            }
+
+            // 如果没有指示点容器则创建
+            if (!dotsContainer) {
+                dotsContainer = document.createElement('div');
+                dotsContainer.id = 'home-appointments-dots';
+                dotsContainer.className = 'flex justify-center gap-1.5 mt-3';
+                container.appendChild(dotsContainer);
+                
+                // 添加滚动监听更新指示点
+                list.onscroll = () => {
+                    // 计算当前索引 (使用 Math.round 处理吸附偏差)
+                    const index = Math.round(list.scrollLeft / list.clientWidth);
+                    updateDotsHighlight(index);
+                };
+            }
+
+            // 重新渲染指示点
+            dotsContainer.innerHTML = myAppointments.map((_, idx) => `
+                <div class="dot-item w-1.5 h-1.5 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-medical-500 w-3' : 'bg-gray-300'}" data-index="${idx}"></div>
+            `).join('');
+        }
+
+        function updateDotsHighlight(activeIndex) {
+            const dots = document.querySelectorAll('#home-appointments-dots .dot-item');
+            dots.forEach((dot, idx) => {
+                if (idx === activeIndex) {
+                    dot.classList.remove('bg-gray-300');
+                    dot.classList.add('bg-medical-500', 'w-3');
+                } else {
+                    dot.classList.remove('bg-medical-500', 'w-3');
+                    dot.classList.add('bg-gray-300');
+                }
+            });
         }
 
         function updateProfileBadge() {
