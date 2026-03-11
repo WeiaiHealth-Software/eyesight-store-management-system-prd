@@ -35,14 +35,38 @@
             scrollbar-width: none;
         }
         
-        /* 模拟手机外框 */
+        /* 模拟手机外框 - 仅在非移动端显示 */
+        @media (min-width: 640px) {
+            .phone-frame {
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+                border: 14px solid #1a1a1a;
+                border-radius: 40px;
+            }
+            .notch {
+                display: block;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .phone-frame {
+                border: none;
+                border-radius: 0;
+                box-shadow: none;
+                width: 100% !important;
+                height: 100% !important;
+            }
+            .notch {
+                display: none;
+            }
+            body {
+                background-color: #f9fafb;
+            }
+        }
+
         .phone-frame {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            border: 14px solid #1a1a1a;
-            border-radius: 40px;
             overflow: hidden;
             position: relative;
-						transform: translate(0);
+            transform: translate(0);
         }
 
         /* 顶部刘海模拟 */
@@ -57,6 +81,7 @@
             border-bottom-left-radius: 12px;
             border-bottom-right-radius: 12px;
             z-index: 50;
+            display: none; /* 默认隐藏，大屏显示 */
         }
 
         /* 底部安全区 */
@@ -93,7 +118,7 @@
 <body class="bg-gray-200 h-screen w-screen flex justify-center items-center font-sans">
 
     <!-- 手机容器 -->
-    <div class="phone-frame w-[375px] h-[812px] bg-gray-50 flex flex-col relative">
+    <div class="phone-frame w-full h-full sm:w-[375px] sm:h-[812px] bg-gray-50 flex flex-col relative">
         <div class="notch"></div>
         
         <!-- 状态栏模拟 -->
