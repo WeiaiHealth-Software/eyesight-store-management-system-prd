@@ -14,11 +14,11 @@
                 extend: {
                     colors: {
                         medical: {
-                            50: '#f0fdf9',
-                            100: '#ccfbf1',
-                            500: '#14b8a6', // Teal 500
-                            600: '#0d9488', // Teal 600
-                            700: '#0f766e',
+                            50: '#ecfdf5', // Emerald 50
+                            100: '#d1fae5', // Emerald 100
+                            500: '#10b981', // Emerald 500
+                            600: '#059669', // Emerald 600
+                            700: '#047857', // Emerald 700
                         }
                     }
                 }
@@ -66,14 +66,14 @@
         
         /* 选中态样式 */
         .date-card.active {
-            background-color: #0d9488;
+            background-color: #059669;
             color: white;
-            border-color: #0d9488;
+            border-color: #059669;
         }
         
         .doctor-item.active {
             background-color: white;
-            border-left: 4px solid #0d9488;
+            border-left: 4px solid #059669;
             font-weight: bold;
         }
 
@@ -84,9 +84,9 @@
         }
         
         .time-slot.selected {
-            background-color: #0d9488;
+            background-color: #059669;
             color: white;
-            border-color: #0d9488;
+            border-color: #059669;
         }
     </style>
 </head>
@@ -137,7 +137,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <div>
                             <p class="text-medical-100 text-sm">早上好，</p>
-                            <h2 class="text-xl font-bold" id="user-name-display">张三</h2>
+                            <h2 class="text-xl font-bold" id="user-name-display">微信昵称</h2>
                         </div>
                         <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
                             <i class="far fa-bell"></i>
@@ -177,12 +177,12 @@
 
                 <!-- 营销/功能占位 -->
                 <div class="grid grid-cols-2 gap-4 px-4 mt-4">
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-50">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-50 cursor-pointer active:scale-95 transition-transform" onclick="showToast('功能开发中')">
                         <i class="fas fa-glasses text-orange-400 text-xl mb-2"></i>
                         <h4 class="font-bold text-gray-700">配镜服务</h4>
                         <p class="text-xs text-gray-400">专业验光配镜</p>
                     </div>
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-50">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-50 cursor-pointer active:scale-95 transition-transform" onclick="showToast('功能开发中')">
                         <i class="fas fa-notes-medical text-purple-400 text-xl mb-2"></i>
                         <h4 class="font-bold text-gray-700">检查报告</h4>
                         <p class="text-xs text-gray-400">随时查看档案</p>
@@ -465,7 +465,7 @@
                             <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-full h-full rounded-full bg-gray-100" alt="Avatar">
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold">微信用户</h2>
+                            <h2 class="text-xl font-bold">微信昵称</h2>
                             <p class="text-medical-100 text-xs mt-1">138****8888</p>
                         </div>
                     </div>
@@ -489,7 +489,7 @@
                                 <i class="fas fa-chevron-right text-gray-300 text-xs"></i>
                             </div>
                         </div>
-                        <div class="menu-item border-b border-gray-50 p-4 flex justify-between items-center active:bg-gray-50" onclick="showToast('功能开发中')">
+                        <div class="menu-item border-b border-gray-50 p-4 flex justify-between items-center active:bg-gray-50" onclick="navigateTo('page-family-group')">
                             <div class="flex items-center gap-3">
                                 <i class="fas fa-users text-orange-400 w-6 text-center"></i>
                                 <span class="text-sm text-gray-700">我的家庭组</span>
@@ -527,6 +527,102 @@
                                 <span class="text-sm text-gray-700">关于我们</span>
                             </div>
                             <i class="fas fa-chevron-right text-gray-300 text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5.5 我的家庭组列表页 -->
+            <div id="page-family-group" class="page hidden min-h-full bg-gray-50 flex flex-col">
+                <div class="bg-white px-4 py-3 shadow-sm flex items-center justify-between z-10 sticky top-0">
+                    <div class="flex items-center gap-3">
+                        <i onclick="goBack()" class="fas fa-arrow-left text-gray-600 p-2 cursor-pointer"></i>
+                        <h2 class="font-bold text-lg">我的家庭组</h2>
+                    </div>
+                    <i onclick="openCreateGroupDrawer()" class="fas fa-plus text-medical-600 text-lg p-2 cursor-pointer"></i>
+                </div>
+                
+                <div class="p-4 space-y-4 flex-1 overflow-y-auto" id="family-group-list">
+                    <!-- JS 生成家庭组列表 -->
+                </div>
+
+                <!-- 创建家庭组 Drawer -->
+                <div id="drawer-create-group" class="hidden absolute inset-0 z-50">
+                    <div class="absolute inset-0 bg-black/50 transition-opacity" onclick="closeCreateGroupDrawer()"></div>
+                    <div class="absolute bottom-0 w-full bg-white rounded-t-2xl p-6 transform transition-transform duration-300 safe-area-bottom">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold">创建家庭组</h3>
+                            <i onclick="closeCreateGroupDrawer()" class="fas fa-times text-gray-400 p-2"></i>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">家庭组名称</label>
+                                <input type="text" id="input-group-name" class="w-full border border-gray-200 rounded-lg p-3 focus:outline-none focus:border-medical-500" placeholder="例如：我的小家">
+                            </div>
+                            <button onclick="submitCreateGroup()" class="w-full bg-medical-600 text-white py-3 rounded-lg font-bold shadow-md active:scale-95 transition-transform">立即创建</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5.6 家庭组详情页 -->
+            <div id="page-family-group-detail" class="page hidden min-h-full bg-gray-50 flex flex-col">
+                <div class="bg-white px-4 py-3 shadow-sm flex items-center gap-3 z-10 sticky top-0">
+                    <i onclick="goBack()" class="fas fa-arrow-left text-gray-600 p-2 cursor-pointer"></i>
+                    <h2 class="font-bold text-lg">家庭组详情</h2>
+                </div>
+                
+                <div class="flex-1 flex flex-col overflow-y-auto p-4 pb-24">
+                    <!-- 顶部卡片 -->
+                    <div class="bg-gradient-to-r from-medical-500 to-medical-600 rounded-xl p-6 text-white shadow-lg mb-6 relative overflow-hidden">
+                        <div class="absolute -right-6 -top-6 w-24 h-24 bg-white/20 rounded-full blur-xl"></div>
+                        <div class="relative z-10">
+                            <h2 class="text-2xl font-bold mb-2" id="detail-group-name">家庭组名称</h2>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-white/20 px-2 py-0.5 rounded text-xs" id="detail-group-role">角色</span>
+                                <span class="text-medical-50 text-xs" id="detail-group-count">成员 0 人</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 成员列表 -->
+                    <div class="flex-1 flex flex-col">
+                      <h3 class="font-bold text-gray-800 mb-3 px-1">家庭成员</h3>
+                      <div class="bg-white rounded-xl shadow-sm overflow-hidden" id="family-member-list">
+                          <!-- JS 生成成员列表 -->
+                      </div>
+                    </div>
+
+                    <!-- 底部按钮栏 -->
+                    <div class="p-4 safe-area-bottom flex gap-3" id="family-detail-actions">
+                        <!-- JS 生成按钮 -->
+                    </div>
+                </div>
+
+                <!-- 邀请成员 Drawer -->
+                <div id="drawer-invite-member" class="hidden absolute inset-0 z-50">
+                    <div class="absolute inset-0 bg-black/50 transition-opacity" onclick="closeInviteDrawer()"></div>
+                    <div class="absolute bottom-0 w-full bg-white rounded-t-2xl p-6 transform transition-transform duration-300 safe-area-bottom">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold">邀请新成员</h3>
+                            <i onclick="closeInviteDrawer()" class="fas fa-times text-gray-400 p-2"></i>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">手机号 <span class="text-red-500">*</span></label>
+                                <input type="tel" id="input-invite-phone" class="w-full border border-gray-200 rounded-lg p-3 focus:outline-none focus:border-medical-500" placeholder="请输入成员手机号">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">身份备注</label>
+                                <div class="grid grid-cols-4 gap-2 mb-2">
+                                    <button onclick="selectRoleTag('爸爸')" class="role-tag border border-gray-200 rounded py-1 text-xs text-gray-600 active:bg-medical-50 active:border-medical-500">爸爸</button>
+                                    <button onclick="selectRoleTag('妈妈')" class="role-tag border border-gray-200 rounded py-1 text-xs text-gray-600 active:bg-medical-50 active:border-medical-500">妈妈</button>
+                                    <button onclick="selectRoleTag('爷爷')" class="role-tag border border-gray-200 rounded py-1 text-xs text-gray-600 active:bg-medical-50 active:border-medical-500">爷爷</button>
+                                    <button onclick="selectRoleTag('奶奶')" class="role-tag border border-gray-200 rounded py-1 text-xs text-gray-600 active:bg-medical-50 active:border-medical-500">奶奶</button>
+                                </div>
+                                <input type="text" id="input-invite-role" class="w-full border border-gray-200 rounded-lg p-3 focus:outline-none focus:border-medical-500" placeholder="自定义身份，如：舅舅">
+                            </div>
+                            <button onclick="submitInvite()" class="w-full bg-medical-600 text-white py-3 rounded-lg font-bold shadow-md active:scale-95 transition-transform">发送邀请</button>
                         </div>
                     </div>
                 </div>
@@ -888,6 +984,14 @@
                 document.getElementById('page-my-appointments').classList.add('hidden');
                 document.getElementById('page-appointment-detail').classList.remove('hidden');
                 renderAppointmentDetail(params.id);
+            } else if (pageId === 'page-family-group') {
+                document.getElementById('page-profile').classList.add('hidden');
+                document.getElementById('page-family-group').classList.remove('hidden');
+                renderFamilyGroups();
+            } else if (pageId === 'page-family-group-detail') {
+                document.getElementById('page-family-group').classList.add('hidden');
+                document.getElementById('page-family-group-detail').classList.remove('hidden');
+                renderFamilyDetail(params.id);
             }
         }
 
@@ -896,8 +1000,20 @@
             const storePage = document.getElementById('page-store-select');
             const myAptPage = document.getElementById('page-my-appointments');
             const detailPage = document.getElementById('page-appointment-detail');
+            const familyPage = document.getElementById('page-family-group');
+            const familyDetailPage = document.getElementById('page-family-group-detail');
             
-            if (!detailPage.classList.contains('hidden')) {
+            if (!familyDetailPage.classList.contains('hidden')) {
+                familyDetailPage.classList.add('hidden');
+                familyPage.classList.remove('hidden');
+                return;
+            } else if (!familyPage.classList.contains('hidden')) {
+                familyPage.classList.add('hidden');
+                document.getElementById('page-profile').classList.remove('hidden');
+                // 确保 tab 栏可见
+                document.getElementById('tab-bar').classList.remove('hidden');
+                return;
+            } else if (!detailPage.classList.contains('hidden')) {
                 detailPage.classList.add('hidden');
                 myAptPage.classList.remove('hidden');
             } else if (!myAptPage.classList.contains('hidden')) {
@@ -1527,6 +1643,191 @@
                 document.getElementById('page-home').classList.remove('hidden');
                 switchTab('home');
             }, 1500);
+        }
+
+        // === 家庭组逻辑 ===
+        let familyGroups = [
+            {
+                id: 'FG001',
+                name: '温馨小家',
+                myRole: 'admin',
+                members: [
+                    { name: '你', role: '管理员', isMe: true },
+                    { name: '李梅', role: '妻子', isMe: false },
+                    { name: '王小宝', role: '儿子', isMe: false }
+                ]
+            },
+            {
+                id: 'FG002',
+                name: '老家大院',
+                myRole: 'member',
+                members: [
+                    { name: '王建国', role: '管理员', isMe: false },
+                    { name: '张秀兰', role: '母亲', isMe: false },
+                    { name: '你', role: '成员', isMe: true }
+                ]
+            }
+        ];
+        let currentFamilyGroupId = null;
+
+        function renderFamilyGroups() {
+            const container = document.getElementById('family-group-list');
+            if (familyGroups.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-12 text-gray-400">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-users text-2xl"></i>
+                        </div>
+                        <p class="text-sm">您还没有加入任何家庭组</p>
+                        <button onclick="openCreateGroupDrawer()" class="mt-4 text-medical-600 font-bold text-sm">创建一个</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = familyGroups.map(group => `
+                <div onclick="navigateTo('page-family-group-detail', {id: '${group.id}'})" class="bg-white rounded-xl p-4 shadow-sm border border-gray-50 flex items-center justify-between active:scale-[0.99] transition-transform cursor-pointer">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 ${group.myRole === 'admin' ? 'bg-orange-100 text-orange-500' : 'bg-blue-100 text-blue-500'} rounded-full flex items-center justify-center text-xl">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800">${group.name}</h4>
+                            <p class="text-xs text-gray-500 mt-0.5">${group.members.length} 位成员</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end gap-2">
+                        <span class="text-[10px] px-2 py-0.5 rounded border ${group.myRole === 'admin' ? 'border-medical-200 text-medical-500 bg-medical-50' : 'border-blue-200 text-blue-500 bg-blue-50'}">
+                            ${group.myRole === 'admin' ? '管理员' : '成员'}
+                        </span>
+                        <i class="fas fa-chevron-right text-gray-300 text-xs"></i>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderFamilyDetail(id) {
+            const group = familyGroups.find(g => g.id === id);
+            if (!group) return;
+            
+            currentFamilyGroupId = id;
+
+            // 渲染头部信息
+            document.getElementById('detail-group-name').innerText = group.name;
+            document.getElementById('detail-group-count').innerText = `成员 ${group.members.length} 人`;
+            const roleEl = document.getElementById('detail-group-role');
+            roleEl.innerText = group.myRole === 'admin' ? '管理员' : '成员';
+            
+            // 渲染成员列表
+            const listContainer = document.getElementById('family-member-list');
+            listContainer.innerHTML = group.members.map(member => `
+                <div class="flex justify-between items-center p-4 border-b border-gray-50 last:border-0">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 font-bold text-sm">
+                            ${member.name.substr(0, 1)}
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-gray-800 text-sm">${member.name}</span>
+                                ${member.isMe ? '<span class="text-[10px] bg-gray-100 text-gray-500 px-1 rounded">我</span>' : ''}
+                            </div>
+                            <p class="text-xs text-gray-400 mt-0.5">${member.role}</p>
+                        </div>
+                    </div>
+                    ${member.role === '管理员' ? '<i class="fas fa-crown text-yellow-400 text-sm"></i>' : ''}
+                </div>
+            `).join('');
+
+            // 渲染底部按钮
+            const actionsContainer = document.getElementById('family-detail-actions');
+            if (group.myRole === 'admin') {
+                actionsContainer.innerHTML = `
+                    <button onclick="handleDisband('${group.id}')" class="flex-1 py-3 rounded-lg bg-red-50 text-red-600 font-bold active:bg-red-100">解散家庭组</button>
+                    <button onclick="openInviteDrawer()" class="flex-1 py-3 rounded-lg bg-medical-600 text-white font-bold shadow-md active:bg-medical-700">邀请成员</button>
+                `;
+            } else {
+                actionsContainer.innerHTML = `
+                    <button onclick="handleExit('${group.id}')" class="w-full py-3 rounded-lg bg-gray-100 text-gray-600 font-bold active:bg-gray-200">退出家庭组</button>
+                `;
+            }
+        }
+
+        // Drawer 操作
+        function openCreateGroupDrawer() {
+            document.getElementById('drawer-create-group').classList.remove('hidden');
+        }
+        function closeCreateGroupDrawer() {
+            document.getElementById('drawer-create-group').classList.add('hidden');
+        }
+        function submitCreateGroup() {
+            const nameInput = document.getElementById('input-group-name');
+            const name = nameInput.value.trim();
+            if (!name) {
+                showToast('请输入家庭组名称');
+                return;
+            }
+            
+            const newGroup = {
+                id: 'FG' + Date.now(),
+                name: name,
+                myRole: 'admin',
+                members: [
+                    { name: '你', role: '管理员', isMe: true }
+                ]
+            };
+            
+            familyGroups.push(newGroup);
+            renderFamilyGroups();
+            closeCreateGroupDrawer();
+            showToast('创建成功');
+            nameInput.value = ''; // Reset
+        }
+
+        function openInviteDrawer() {
+            document.getElementById('drawer-invite-member').classList.remove('hidden');
+        }
+        function closeInviteDrawer() {
+            document.getElementById('drawer-invite-member').classList.add('hidden');
+        }
+        function selectRoleTag(role) {
+            document.getElementById('input-invite-role').value = role;
+        }
+        function submitInvite() {
+            const phone = document.getElementById('input-invite-phone').value.trim();
+            const role = document.getElementById('input-invite-role').value.trim();
+            
+            if (!phone || phone.length !== 11) {
+                showToast('请输入正确的11位手机号');
+                return;
+            }
+            if (!role) {
+                showToast('请输入或选择身份备注');
+                return;
+            }
+
+            closeInviteDrawer();
+            showToast('邀请已发送');
+            // 模拟邀请成功，不实际添加到列表，因为需要对方同意
+            document.getElementById('input-invite-phone').value = '';
+            document.getElementById('input-invite-role').value = '';
+        }
+
+        function handleDisband(id) {
+            if (confirm('确定要解散该家庭组吗？解散后无法恢复。')) {
+                familyGroups = familyGroups.filter(g => g.id !== id);
+                showToast('已解散');
+                goBack();
+                renderFamilyGroups();
+            }
+        }
+
+        function handleExit(id) {
+            if (confirm('确定要退出该家庭组吗？')) {
+                familyGroups = familyGroups.filter(g => g.id !== id);
+                showToast('已退出');
+                goBack();
+                renderFamilyGroups();
+            }
         }
 
         // === 弹窗与交互 ===
