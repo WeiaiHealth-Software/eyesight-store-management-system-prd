@@ -202,16 +202,21 @@
                 </div>
 
                 <!-- 营销/功能占位 -->
-                <div class="grid grid-cols-2 gap-4 px-4 mt-4">
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-50 cursor-pointer active:scale-95 transition-transform" onclick="showToast('功能开发中')">
-                        <i class="fas fa-glasses text-orange-400 text-xl mb-2"></i>
-                        <h4 class="font-bold text-gray-700">配镜服务</h4>
-                        <p class="text-xs text-gray-400">专业验光配镜</p>
+                <div class="grid grid-cols-3 gap-3 px-4 mt-4">
+                    <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-50 cursor-pointer active:scale-95 transition-transform" onclick="showToast('功能开发中')">
+                        <i class="fas fa-eye text-blue-400 text-xl mb-2"></i>
+                        <h4 class="font-bold text-gray-700 text-sm">视觉训练</h4>
+                        <p class="text-[10px] text-gray-400">定制康复训练</p>
                     </div>
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-50 cursor-pointer active:scale-95 transition-transform" onclick="showToast('功能开发中')">
+                    <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-50 cursor-pointer active:scale-95 transition-transform" onclick="showToast('功能开发中')">
+                        <i class="fas fa-glasses text-orange-400 text-xl mb-2"></i>
+                        <h4 class="font-bold text-gray-700 text-sm">配镜服务</h4>
+                        <p class="text-[10px] text-gray-400">专业验光配镜</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-50 cursor-pointer active:scale-95 transition-transform" onclick="showToast('功能开发中')">
                         <i class="fas fa-notes-medical text-purple-400 text-xl mb-2"></i>
-                        <h4 class="font-bold text-gray-700">检查报告</h4>
-                        <p class="text-xs text-gray-400">随时查看档案</p>
+                        <h4 class="font-bold text-gray-700 text-sm">检查报告</h4>
+                        <p class="text-[10px] text-gray-400">随时查看档案</p>
                     </div>
                 </div>
 
@@ -730,10 +735,28 @@
                     <h2 class="font-bold text-lg flex-1 text-center pr-8">我的预约</h2>
                     <i class="fas fa-ellipsis-h text-gray-600"></i>
                 </div>
-                <div class="p-4 space-y-4" id="my-appointments-list-container">
+                
+                <!-- 预约类型切换 -->
+                <div class="mx-4 mt-4">
+                    <div class="flex p-1 bg-gray-100 rounded-lg">
+                        <button onclick="switchAppointmentType('clinic')" id="btn-type-clinic" class="flex-1 py-1.5 text-sm font-bold rounded-l-md bg-medical-600 text-white shadow-sm transition-all">门诊预约</button>
+                        <button onclick="switchAppointmentType('training')" id="btn-type-training" class="flex-1 py-1.5 text-sm font-medium rounded-r-md bg-white text-gray-500 hover:text-gray-700 transition-all">视觉训练</button>
+                    </div>
+                </div>
+
+                <div class="p-4 space-y-4 flex-1" id="my-appointments-list-container">
                     <!-- JS 生成列表 -->
                 </div>
-                <div class="text-center text-gray-400 text-xs pb-32">没有更多了</div>
+                
+                <div id="training-appointments-container" class="hidden flex-col items-center justify-center py-20 text-gray-400">
+                    <div class="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4 text-gray-400">
+                        <i class="fas fa-dumbbell text-3xl"></i>
+                    </div>
+                    <p class="text-sm">暂无视觉训练预约</p>
+                    <button onclick="showToast('功能开发中')" class="mt-4 px-6 py-2 border border-medical-600 text-medical-600 rounded-full text-sm font-bold">去预约</button>
+                </div>
+
+                <div class="text-center text-gray-400 text-xs pb-32" id="clinic-no-more">没有更多了</div>
             </div>
 
             <!-- 7. 预约详情页 -->
@@ -1517,6 +1540,17 @@
         // === 我的预约与详情逻辑 ===
         function renderMyAppointments() {
             const container = document.getElementById('my-appointments-list-container');
+            const trainingContainer = document.getElementById('training-appointments-container');
+            const noMore = document.getElementById('clinic-no-more');
+            
+            // 默认显示门诊预约，隐藏视觉训练
+            container.classList.remove('hidden');
+            trainingContainer.classList.add('hidden');
+            noMore.classList.remove('hidden');
+            
+            // 重置按钮样式
+            switchAppointmentType('clinic');
+
             if (myAppointments.length === 0) {
                 container.innerHTML = '<div class="text-center text-gray-400 py-10">暂无预约记录</div>';
                 return;
@@ -1574,6 +1608,35 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        function switchAppointmentType(type) {
+            const btnClinic = document.getElementById('btn-type-clinic');
+            const btnTraining = document.getElementById('btn-type-training');
+            const clinicContainer = document.getElementById('my-appointments-list-container');
+            const trainingContainer = document.getElementById('training-appointments-container');
+            const noMore = document.getElementById('clinic-no-more');
+
+            if (type === 'clinic') {
+                btnClinic.classList.remove('bg-white', 'text-gray-500');
+                btnClinic.classList.add('bg-medical-600', 'text-white', 'shadow-sm', 'font-bold');
+                btnTraining.classList.remove('bg-medical-600', 'text-white', 'shadow-sm', 'font-bold');
+                btnTraining.classList.add('bg-white', 'text-gray-500');
+                
+                clinicContainer.classList.remove('hidden');
+                noMore.classList.remove('hidden');
+                trainingContainer.classList.add('hidden');
+            } else {
+                btnTraining.classList.remove('bg-white', 'text-gray-500');
+                btnTraining.classList.add('bg-medical-600', 'text-white', 'shadow-sm', 'font-bold');
+                btnClinic.classList.remove('bg-medical-600', 'text-white', 'shadow-sm', 'font-bold');
+                btnClinic.classList.add('bg-white', 'text-gray-500');
+                
+                clinicContainer.classList.add('hidden');
+                noMore.classList.add('hidden');
+                trainingContainer.classList.remove('hidden');
+                trainingContainer.classList.add('flex');
+            }
         }
 
         function renderAppointmentDetail(id) {
@@ -1654,7 +1717,7 @@
             list.classList.remove('gap-3');
             
             list.innerHTML = myAppointments.map(apt => `
-                <div class="snap-center shrink-0 min-w-full bg-white rounded-xl p-4 border border-medical-100 relative overflow-hidden">
+                <div onclick="navigateTo('page-appointment-detail', {id: '${apt.id}'})" class="snap-center shrink-0 min-w-full bg-white rounded-xl p-4 border border-medical-100 relative overflow-hidden">
                     <div class="absolute top-0 right-0 bg-medical-500 text-white text-[10px] px-2 py-1 rounded-bl-lg">
                         ${apt.type === 'vip' ? '特需号' : '待就诊'}
                     </div>
