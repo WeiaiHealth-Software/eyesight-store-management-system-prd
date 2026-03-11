@@ -139,8 +139,9 @@
                             <p class="text-medical-100 text-sm">早上好，</p>
                             <h2 class="text-xl font-bold" id="user-name-display">微信昵称</h2>
                         </div>
-                        <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                        <div onclick="navigateTo('page-notifications')" class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm relative cursor-pointer active:scale-95 transition-transform">
                             <i class="far fa-bell"></i>
+                            <div class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full"></div>
                         </div>
                     </div>
                     <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 flex items-center gap-3 border border-white/20">
@@ -330,6 +331,18 @@
                 </div>
             </div>
 
+            <!-- 2.1 消息通知页 -->
+            <div id="page-notifications" class="page hidden min-h-full bg-gray-50 flex flex-col">
+                <div class="bg-white px-4 py-3 shadow-sm flex items-center gap-3 z-10 sticky top-0">
+                    <i onclick="goBack()" class="fas fa-arrow-left text-gray-600 p-2 cursor-pointer"></i>
+                    <h2 class="font-bold text-lg">消息中心</h2>
+                </div>
+                
+                <div class="p-4 space-y-4 flex-1 overflow-y-auto" id="notification-list-container">
+                    <!-- JS 生成消息列表 -->
+                </div>
+            </div>
+
             <!-- 3. 门店选择页 -->
             <div id="page-store-select" class="page hidden min-h-full bg-gray-50 flex flex-col">
                 <div class="bg-white px-4 py-3 shadow-sm flex items-center gap-3 z-10">
@@ -496,7 +509,7 @@
                             </div>
                             <i class="fas fa-chevron-right text-gray-300 text-xs"></i>
                         </div>
-                        <div class="menu-item border-b border-gray-50 p-4 flex justify-between items-center active:bg-gray-50" onclick="showToast('功能开发中')">
+                        <div class="menu-item border-b border-gray-50 p-4 flex justify-between items-center active:bg-gray-50" onclick="navigateTo('page-patient-list')">
                             <div class="flex items-center gap-3">
                                 <i class="fas fa-user-injured text-green-400 w-6 text-center"></i>
                                 <span class="text-sm text-gray-700">我的就诊人</span>
@@ -623,6 +636,63 @@
                                 <input type="text" id="input-invite-role" class="w-full border border-gray-200 rounded-lg p-3 focus:outline-none focus:border-medical-500" placeholder="自定义身份，如：舅舅">
                             </div>
                             <button onclick="submitInvite()" class="w-full bg-medical-600 text-white py-3 rounded-lg font-bold shadow-md active:scale-95 transition-transform">发送邀请</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5.7 我的就诊人列表页 -->
+            <div id="page-patient-list" class="page hidden min-h-full bg-gray-50 flex flex-col">
+                <div class="bg-white px-4 py-3 shadow-sm flex items-center justify-between z-10 sticky top-0">
+                    <div class="flex items-center gap-3">
+                        <i onclick="goBack()" class="fas fa-arrow-left text-gray-600 p-2 cursor-pointer"></i>
+                        <h2 class="font-bold text-lg">我的就诊人</h2>
+                    </div>
+                    <i onclick="openAddPatientDrawer()" class="fas fa-plus text-medical-600 text-lg p-2 cursor-pointer"></i>
+                </div>
+                
+                <div class="p-4 space-y-4 flex-1 overflow-y-auto" id="patient-list-container">
+                    <!-- JS 生成就诊人列表 -->
+                </div>
+
+                <!-- 添加就诊人 Drawer -->
+                <div id="drawer-add-patient" class="hidden absolute inset-0 z-50">
+                    <div class="absolute inset-0 bg-black/50 transition-opacity" onclick="closeAddPatientDrawer()"></div>
+                    <div class="absolute bottom-0 w-full bg-white rounded-t-2xl p-6 transform transition-transform duration-300 safe-area-bottom">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold" id="drawer-title">添加就诊人</h3>
+                            <i onclick="closeAddPatientDrawer()" class="fas fa-times text-gray-400 p-2"></i>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">姓名 <span class="text-red-500">*</span></label>
+                                <input type="text" id="input-patient-name" class="w-full border border-gray-200 rounded-lg p-3 focus:outline-none focus:border-medical-500" placeholder="请输入真实姓名">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">性别 <span class="text-red-500">*</span></label>
+                                <div class="flex gap-4">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="patient-gender" value="male" class="accent-medical-600 w-4 h-4" checked>
+                                        <span class="text-gray-700">男</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="patient-gender" value="female" class="accent-medical-600 w-4 h-4">
+                                        <span class="text-gray-700">女</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">出生日期</label>
+                                <input type="date" id="input-patient-birthday" class="w-full border border-gray-200 rounded-lg p-3 focus:outline-none focus:border-medical-500 text-gray-700">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">身份证号</label>
+                                <input type="text" id="input-patient-idcard" class="w-full border border-gray-200 rounded-lg p-3 focus:outline-none focus:border-medical-500" placeholder="选填，用于医保挂号">
+                            </div>
+                            <div class="flex gap-3 pt-2">
+                                <button onclick="closeAddPatientDrawer()" class="flex-1 py-3 rounded-lg bg-gray-100 text-gray-600 font-medium active:bg-gray-200">取消</button>
+                                <button onclick="submitAddPatient()" id="btn-submit-patient" class="flex-1 py-3 rounded-lg bg-medical-600 text-white font-bold shadow-md active:bg-medical-700">确认添加</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -992,6 +1062,15 @@
                 document.getElementById('page-family-group').classList.add('hidden');
                 document.getElementById('page-family-group-detail').classList.remove('hidden');
                 renderFamilyDetail(params.id);
+            } else if (pageId === 'page-patient-list') {
+                document.getElementById('page-profile').classList.add('hidden');
+                document.getElementById('page-patient-list').classList.remove('hidden');
+                renderPatientList();
+            } else if (pageId === 'page-notifications') {
+                document.getElementById('page-home').classList.add('hidden');
+                document.getElementById('page-notifications').classList.remove('hidden');
+                document.getElementById('tab-bar').classList.add('hidden');
+                renderNotifications();
             }
         }
 
@@ -1002,8 +1081,19 @@
             const detailPage = document.getElementById('page-appointment-detail');
             const familyPage = document.getElementById('page-family-group');
             const familyDetailPage = document.getElementById('page-family-group-detail');
+            const patientPage = document.getElementById('page-patient-list');
+            const notificationPage = document.getElementById('page-notifications');
             
-            if (!familyDetailPage.classList.contains('hidden')) {
+            if (!notificationPage.classList.contains('hidden')) {
+                notificationPage.classList.add('hidden');
+                document.getElementById('page-home').classList.remove('hidden');
+                document.getElementById('tab-bar').classList.remove('hidden');
+                return;
+            } else if (!patientPage.classList.contains('hidden')) {
+                patientPage.classList.add('hidden');
+                document.getElementById('page-profile').classList.remove('hidden');
+                return;
+            } else if (!familyDetailPage.classList.contains('hidden')) {
                 familyDetailPage.classList.add('hidden');
                 familyPage.classList.remove('hidden');
                 return;
@@ -1851,6 +1941,129 @@
             }
         }
 
+        // === 就诊人管理逻辑 ===
+        let patients = [
+            { id: 1, name: '张三', gender: 'male', birthday: '1990-01-01', idCard: '310101199001011234' },
+            { id: 2, name: '李四', gender: 'female', birthday: '1995-05-20', idCard: '' }
+        ];
+
+        function renderPatientList() {
+            const container = document.getElementById('patient-list-container');
+            if (patients.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-12 text-gray-400">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-user-injured text-2xl"></i>
+                        </div>
+                        <p class="text-sm">您还没有添加就诊人</p>
+                        <button onclick="openAddPatientDrawer()" class="mt-4 text-medical-600 font-bold text-sm">添加就诊人</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = patients.map(p => {
+                const genderIcon = p.gender === 'male' 
+                    ? '<i class="fas fa-mars text-blue-500"></i>' 
+                    : '<i class="fas fa-venus text-pink-500"></i>';
+                
+                return `
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-50 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h4 class="font-bold text-gray-800 text-lg">${p.name}</h4>
+                                <span class="text-sm">${genderIcon}</span>
+                            </div>
+                            <div class="flex flex-col gap-1 mt-2">
+                                ${p.birthday ? `<p class="text-xs text-gray-800 flex items-center"><i class="fas fa-birthday-cake mr-2 w-4 text-center text-orange-400"></i>${p.birthday}</p>` : ''}
+                                ${p.idCard ? `<p class="text-xs text-gray-800 flex items-center"><i class="fas fa-id-card mr-2 w-4 text-center text-blue-400"></i>${p.idCard.replace(/^(\d{4})\d+(\d{4})$/, "$1****$2")}</p>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <i onclick="openEditPatientDrawer(${p.id})" class="fas fa-edit text-medical-600 p-2 text-lg active:scale-90 transition-transform"></i>
+                </div>
+                `;
+            }).join('');
+        }
+
+        let editingPatientId = null;
+
+        function openAddPatientDrawer() {
+            editingPatientId = null;
+            document.getElementById('drawer-title').innerText = '添加就诊人';
+            document.getElementById('btn-submit-patient').innerText = '确认添加';
+            document.getElementById('drawer-add-patient').classList.remove('hidden');
+            // 清空表单
+            document.getElementById('input-patient-name').value = '';
+            document.getElementById('input-patient-birthday').value = '';
+            document.getElementById('input-patient-idcard').value = '';
+            document.querySelector('input[name="patient-gender"][value="male"]').checked = true;
+        }
+
+        function openEditPatientDrawer(id) {
+            const patient = patients.find(p => p.id === id);
+            if (!patient) return;
+
+            editingPatientId = id;
+            document.getElementById('drawer-title').innerText = '编辑就诊人';
+            document.getElementById('btn-submit-patient').innerText = '保存修改';
+            
+            // 回填表单
+            document.getElementById('input-patient-name').value = patient.name;
+            document.getElementById('input-patient-birthday').value = patient.birthday;
+            document.getElementById('input-patient-idcard').value = patient.idCard;
+            document.querySelector(`input[name="patient-gender"][value="${patient.gender}"]`).checked = true;
+
+            document.getElementById('drawer-add-patient').classList.remove('hidden');
+        }
+
+        function closeAddPatientDrawer() {
+            document.getElementById('drawer-add-patient').classList.add('hidden');
+            editingPatientId = null;
+        }
+
+        function submitAddPatient() {
+            const name = document.getElementById('input-patient-name').value.trim();
+            const gender = document.querySelector('input[name="patient-gender"]:checked').value;
+            const birthday = document.getElementById('input-patient-birthday').value;
+            const idCard = document.getElementById('input-patient-idcard').value.trim();
+
+            if (!name) {
+                showToast('请输入姓名');
+                return;
+            }
+
+            if (editingPatientId) {
+                // 编辑模式
+                const index = patients.findIndex(p => p.id === editingPatientId);
+                if (index !== -1) {
+                    patients[index] = {
+                        ...patients[index],
+                        name,
+                        gender,
+                        birthday,
+                        idCard
+                    };
+                    showToast('修改成功');
+                }
+            } else {
+                // 新增模式
+                const newPatient = {
+                    id: Date.now(),
+                    name,
+                    gender,
+                    birthday,
+                    idCard
+                };
+                patients.push(newPatient);
+                showToast('添加成功');
+            }
+
+            renderPatientList();
+            closeAddPatientDrawer();
+        }
+
         function showToast(msg) {
             const toast = document.getElementById('toast');
             toast.innerText = msg;
@@ -1858,6 +2071,107 @@
             setTimeout(() => {
                 toast.classList.add('hidden');
             }, 2000);
+        }
+
+        // === 消息通知逻辑 ===
+        let notifications = [
+            {
+                id: 1,
+                type: 'appointment',
+                title: '预约成功提醒',
+                time: '10:30',
+                content: '您预约 3.20 号 张志明 医生的特需号，就诊时间：8:00-8:30，请按时到店。',
+                read: false,
+                actions: [
+                    { label: '查看详情', type: 'primary', handler: "navigateTo('page-my-appointments')" }
+                ]
+            },
+            {
+                id: 2,
+                type: 'family',
+                title: '家庭组成员加入',
+                time: '昨天',
+                content: '您邀请的 王小宝 已成功加入家庭组：温馨小家。',
+                read: true,
+                actions: [
+                    { label: '查看详情', type: 'default', handler: "navigateTo('page-family-group')" }
+                ]
+            },
+            {
+                id: 3,
+                type: 'invite',
+                title: '家庭组邀请',
+                time: '前天',
+                content: '您被 张伟（133****8888） 邀请加入家庭组：上海66号。',
+                read: false,
+                status: 'pending', // pending, accepted, rejected
+                actions: [
+                    { label: '拒绝', type: 'danger', handler: "handleInviteResponse(3, 'reject')" },
+                    { label: '同意', type: 'primary', handler: "handleInviteResponse(3, 'accept')" }
+                ]
+            }
+        ];
+
+        function renderNotifications() {
+            const container = document.getElementById('notification-list-container');
+            if (notifications.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-400 py-10">暂无消息</div>';
+                return;
+            }
+
+            container.innerHTML = notifications.map(n => {
+                let actionBtns = '';
+                if (n.status && n.status !== 'pending') {
+                    actionBtns = `<span class="text-xs text-gray-400 mt-2 block text-right">${n.status === 'accepted' ? '已同意' : '已拒绝'}</span>`;
+                } else if (n.actions && n.actions.length > 0) {
+                    const btns = n.actions.map(btn => {
+                        let btnClass = 'bg-gray-100 text-gray-600';
+                        if (btn.type === 'primary') btnClass = 'bg-medical-600 text-white';
+                        if (btn.type === 'danger') btnClass = 'bg-red-50 text-red-600 border border-red-100';
+                        return `<button onclick="${btn.handler}" class="px-4 py-1.5 rounded-full text-xs font-bold ${btnClass} active:opacity-80">${btn.label}</button>`;
+                    }).join('');
+                    actionBtns = `<div class="flex justify-end gap-2 mt-3 pt-3 border-t border-gray-50">${btns}</div>`;
+                }
+
+                return `
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-50 relative overflow-hidden">
+                    ${!n.read ? '<div class="absolute top-3 right-3 w-2 h-2 bg-red-500 rounded-full"></div>' : ''}
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center gap-2">
+                            <i class="fas ${n.type === 'appointment' ? 'fa-calendar-check text-blue-500' : (n.type === 'invite' ? 'fa-envelope-open-text text-orange-500' : 'fa-users text-green-500')}"></i>
+                            <h4 class="font-bold text-gray-800 text-sm">${n.title}</h4>
+                        </div>
+                        <span class="text-xs text-gray-400 mr-2">${n.time}</span>
+                    </div>
+                    <p class="text-xs text-gray-600 leading-relaxed">${n.content}</p>
+                    ${actionBtns}
+                </div>
+                `;
+            }).join('');
+        }
+
+        function handleInviteResponse(id, action) {
+            const notif = notifications.find(n => n.id === id);
+            if (notif) {
+                notif.status = action === 'accept' ? 'accepted' : 'rejected';
+                notif.read = true;
+                // 更新UI
+                renderNotifications();
+                showToast(action === 'accept' ? '已加入家庭组' : '已拒绝邀请');
+                
+                // 如果同意，模拟添加家庭组数据
+                if (action === 'accept') {
+                    familyGroups.push({
+                        id: 'FG' + Date.now(),
+                        name: '上海66号',
+                        myRole: 'member',
+                        members: [
+                            { name: '张伟', role: '管理员', isMe: false },
+                            { name: '你', role: '成员', isMe: true }
+                        ]
+                    });
+                }
+            }
         }
 
         // 默认不执行任何页面跳转，等待用户点击登录
