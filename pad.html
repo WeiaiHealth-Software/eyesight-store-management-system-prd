@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>惟翎·门店管理系统 Pad端</title>
+  <!-- 引入 Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 引入 FontAwesome 图标库 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <script>
+    // 配置 Tailwind 主题颜色
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',  // emerald-50
+              100: '#d1fae5', // emerald-100
+              500: '#10b981', // emerald-500
+              600: '#059669', // emerald-600
+              900: '#064e3b', // emerald-900
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* 简单的淡入动画 */
+    .fade-in {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* 隐藏滚动条但保留滚动功能 */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="font-sans antialiased text-slate-800 bg-slate-50 overflow-hidden select-none">
+
+  <!-- 1. 首页 (Home Screen) -->
+  <div id="screen-home" class="flex flex-col items-center justify-center h-screen bg-brand-50 transition-opacity duration-300">
+    <div class="flex items-center space-x-4 mb-8">
+      <div class="p-4 bg-white rounded-2xl shadow-sm border border-brand-100">
+        <i class="fa-solid fa-eye text-5xl text-brand-500"></i>
+      </div>
+      <h1 class="text-5xl font-light tracking-wider text-slate-800">惟翎<span class="font-bold text-brand-500 mx-1">·</span>门店管理系统</h1>
+    </div>
+    <p class="text-slate-500 mb-12 text-lg tracking-widest font-medium">WEILING STORE MANAGEMENT SYSTEM</p>
+    
+    <button onclick="switchScreen('login')" class="group relative px-12 py-5 bg-brand-500 hover:bg-brand-600 transition-all duration-300 rounded-full text-2xl font-medium text-white shadow-lg hover:shadow-xl hover:-translate-y-1 flex items-center space-x-3 overflow-hidden">
+      <i class="fa-solid fa-clipboard-user relative z-10"></i>
+      <span class="relative z-10">签到上班</span>
+    </button>
+  </div>
+
+  <!-- 2. 登录/签到页 (Login Screen) -->
+  <div id="screen-login" class="hidden flex h-screen bg-slate-50">
+    <!-- 左侧：角色与员工选择 -->
+    <div class="w-7/12 bg-white shadow-xl z-10 flex flex-col">
+      <div class="p-6 border-b border-slate-100 flex items-center space-x-4">
+        <button onclick="switchScreen('home')" class="p-3 hover:bg-slate-100 rounded-full text-slate-500 transition-colors">
+          <i class="fa-solid fa-chevron-left text-xl"></i>
+        </button>
+        <h2 class="text-2xl font-bold text-slate-800">选择签到账户</h2>
+      </div>
+      
+      <!-- 角色筛选区 -->
+      <div id="role-filters" class="px-6 py-4 flex space-x-3 overflow-x-auto border-b border-slate-50 no-scrollbar">
+        <!-- 动态渲染 -->
+      </div>
+
+      <!-- 员工列表区 -->
+      <div class="flex-1 p-6 overflow-y-auto bg-slate-50/50">
+        <div id="user-list" class="grid grid-cols-2 gap-4 content-start">
+          <!-- 动态渲染 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧：密码验证区域 -->
+    <div id="pin-section" class="w-5/12 bg-brand-50/30 flex flex-col items-center justify-center p-12 relative">
+      <!-- 动态渲染 -->
+    </div>
+  </div>
+
+  <!-- 3. 专属工作台 (Dashboard Screen) -->
+  <div id="screen-dashboard" class="hidden h-screen flex flex-col bg-slate-50">
+    <!-- 顶部导航 -->
+    <header class="bg-white shadow-sm px-8 py-4 flex justify-between items-center z-10 border-b border-slate-200">
+      <div class="flex items-center space-x-3">
+        <div class="p-2 bg-brand-500 rounded-lg">
+          <i class="fa-solid fa-eye text-white text-xl"></i>
+        </div>
+        <span class="text-xl font-bold text-slate-800">惟翎管理系统</span>
+        <span id="dashboard-role-badge" class="px-3 py-1 bg-brand-50 text-brand-600 rounded-full text-sm font-bold ml-4 border border-brand-100">
+          <!-- 动态渲染 -->
+        </span>
+      </div>
+      
+      <div class="flex items-center space-x-6">
+        <div class="flex items-center space-x-3">
+          <div id="dashboard-user-avatar" class="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold text-lg">
+            <!-- 动态渲染 -->
+          </div>
+          <div>
+            <p id="dashboard-user-name" class="font-bold text-slate-800 leading-tight">姓名</p>
+            <p class="text-xs text-brand-500 flex items-center mt-1 font-medium">
+              <span class="w-2 h-2 rounded-full bg-brand-500 mr-1 shadow-[0_0_5px_rgba(16,185,129,0.5)]"></span> 在线服务中
+            </p>
+          </div>
+        </div>
+        <div class="w-px h-8 bg-slate-200"></div>
+        <button onclick="logout()" class="flex items-center space-x-2 text-slate-500 hover:text-red-500 transition-colors px-4 py-2 rounded-lg hover:bg-red-50 font-medium">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>签出下班</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 主体内容区 -->
+    <main id="dashboard-content" class="flex-1 p-6 overflow-y-auto">
+      <!-- 动态渲染 -->
+    </main>
+  </div>
+
+  <!-- JavaScript 逻辑 -->
+  <script>
+    // --- 数据模拟 ---
+    const ROLES = [
+      { id: 'all', label: '全部员工' },
+      { id: 'doctor', label: '医生' },
+      { id: 'optometrist', label: '视光师' },
+      { id: 'receptionist', label: '前台' },
+      { id: 'sales', label: '销售' }
+    ];
+
+    const USERS = [
+      { id: 1, name: '李主任', role: 'doctor', title: '主任医师', avatar: '李', color: 'bg-blue-500' },
+      { id: 2, name: '王医生', role: 'doctor', title: '主治医师', avatar: '王', color: 'bg-blue-500' },
+      { id: 3, name: '张视光', role: 'optometrist', title: '高级视光师', avatar: '张', color: 'bg-brand-500' },
+      { id: 4, name: '赵视光', role: 'optometrist', title: '初级视光师', avatar: '赵', color: 'bg-brand-500' },
+      { id: 5, name: '小美', role: 'receptionist', title: '前台主管', avatar: '美', color: 'bg-amber-500' },
+      { id: 6, name: '大强', role: 'sales', title: '资深顾问', avatar: '强', color: 'bg-purple-500' },
+    ];
+
+    // --- 状态管理 ---
+    let currentScreen = 'home';
+    let selectedRole = 'all';
+    let selectedUser = null;
+    let pin = '';
+    let loggedInUser = null;
+
+    // --- 核心方法 ---
+
+    // 切换页面
+    function switchScreen(screenId) {
+      document.getElementById('screen-home').classList.add('hidden');
+      document.getElementById('screen-login').classList.add('hidden');
+      document.getElementById('screen-dashboard').classList.add('hidden');
+      
+      document.getElementById(`screen-${screenId}`).classList.remove('hidden');
+      currentScreen = screenId;
+
+      if (screenId === 'login') {
+        renderRoles();
+        renderUsers();
+        renderPinSection();
+      } else if (screenId === 'dashboard') {
+        renderDashboard();
+      }
+    }
+
+    // 渲染角色筛选器
+    function renderRoles() {
+      const container = document.getElementById('role-filters');
+      container.innerHTML = ROLES.map(role => `
+        <button
+          onclick="selectRole('${role.id}')"
+          class="px-6 py-3 rounded-full text-lg font-medium transition-colors whitespace-nowrap ${
+            selectedRole === role.id 
+              ? 'bg-brand-500 text-white shadow-md' 
+              : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+          }"
+        >
+          ${role.label}
+        </button>
+      `).join('');
+    }
+
+    // 选择角色
+    function selectRole(roleId) {
+      selectedRole = roleId;
+      selectedUser = null;
+      pin = '';
+      renderRoles();
+      renderUsers();
+      renderPinSection();
+    }
+
+    // 渲染用户列表
+    function renderUsers() {
+      const container = document.getElementById('user-list');
+      const filteredUsers = selectedRole === 'all' ? USERS : USERS.filter(u => u.role === selectedRole);
+      
+      container.innerHTML = filteredUsers.map(user => {
+        const isSelected = selectedUser && selectedUser.id === user.id;
+        return `
+          <div 
+            onclick="selectUser(${user.id})"
+            class="p-4 rounded-2xl border-2 cursor-pointer transition-all flex items-center space-x-4 ${
+              isSelected 
+                ? 'border-brand-500 bg-brand-50 shadow-sm' 
+                : 'border-transparent bg-white shadow-sm hover:border-brand-200'
+            }"
+          >
+            <div class="w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold text-white ${user.color}">
+              ${user.avatar}
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-slate-800">${user.name}</h3>
+              <p class="text-slate-500 text-sm mt-1">${user.title}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 选择用户
+    function selectUser(userId) {
+      selectedUser = USERS.find(u => u.id === userId);
+      pin = '';
+      renderUsers();
+      renderPinSection();
+    }
+
+    // 生成圆点 HTML
+    function getDotsHtml() {
+      let html = '';
+      for (let i = 0; i < 4; i++) {
+        const isFilled = pin.length > i;
+        html += `
+          <div class="w-5 h-5 rounded-full transition-all duration-200 ${
+            isFilled ? 'bg-brand-500 scale-110 shadow-md' : 'bg-slate-200'
+          }"></div>
+        `;
+      }
+      return html;
+    }
+
+    // 更新密码圆点状态（局部更新）
+    function updatePinDots() {
+      const container = document.getElementById('pin-dots');
+      if (container) {
+        container.innerHTML = getDotsHtml();
+      }
+    }
+
+    // 渲染右侧密码区域
+    function renderPinSection() {
+      const container = document.getElementById('pin-section');
+      
+      if (!selectedUser) {
+        container.innerHTML = `
+          <div class="text-center text-slate-400 flex flex-col items-center space-y-6 fade-in">
+            <div class="w-32 h-32 rounded-full bg-slate-100 flex items-center justify-center">
+              <i class="fa-solid fa-user-lock text-5xl text-slate-300"></i>
+            </div>
+            <p class="text-2xl font-light tracking-wide text-slate-500">请在左侧选择要登录的账户</p>
+          </div>
+        `;
+        return;
+      }
+
+      // 渲染数字键盘
+      let numpadHtml = '';
+      [1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(num => {
+        numpadHtml += `<button onclick="handlePinInput('${num}')" class="h-16 rounded-2xl bg-white shadow-sm border border-slate-100 text-slate-700 text-2xl font-bold hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200 active:bg-brand-100 transition-all">${num}</button>`;
+      });
+      // 0 放在最左边
+      numpadHtml += `<button onclick="handlePinInput('0')" class="h-16 rounded-2xl bg-white shadow-sm border border-slate-100 text-slate-700 text-2xl font-bold hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200 active:bg-brand-100 transition-all">0</button>`;
+      // 删除按钮占据两列，红色背景白色图标
+      numpadHtml += `<button onclick="handleDeletePin()" class="col-span-2 h-16 rounded-2xl bg-red-500 shadow-sm border border-red-500 text-white flex items-center justify-center hover:bg-red-600 hover:border-red-600 active:bg-red-700 transition-all"><i class="fa-solid fa-delete-left text-2xl"></i></button>`;
+
+      container.innerHTML = `
+        <div class="w-full max-w-sm flex flex-col items-center fade-in">
+          <div class="w-24 h-24 rounded-full ${selectedUser.color} flex items-center justify-center text-4xl font-bold text-white mb-4 shadow-lg ring-4 ring-white">
+            ${selectedUser.avatar}
+          </div>
+          <h2 class="text-3xl font-bold text-slate-800 mb-1">${selectedUser.name}</h2>
+          <p class="text-brand-600 font-medium mb-10 bg-brand-100 px-4 py-1 rounded-full text-sm">${selectedUser.title}</p>
+          
+          <p class="text-slate-500 mb-6 font-medium">请输入四位签到密码</p>
+          
+          <div id="pin-dots" class="flex space-x-6 mb-12">
+            ${getDotsHtml()}
+          </div>
+
+          <div class="grid grid-cols-3 gap-4 w-full">
+            ${numpadHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    // 处理密码输入
+    function handlePinInput(num) {
+      if (pin.length < 4) {
+        pin += num;
+        updatePinDots(); // 仅更新圆点
+        
+        if (pin.length === 4) {
+          // 模拟验证过程
+          setTimeout(() => {
+            loggedInUser = selectedUser;
+            switchScreen('dashboard');
+            pin = ''; // 重置密码
+          }, 200);
+        }
+      }
+    }
+
+    // 删除密码
+    function handleDeletePin() {
+      if (pin.length > 0) {
+        pin = pin.slice(0, -1);
+        updatePinDots(); // 仅更新圆点
+      }
+    }
+
+    // 登出
+    function logout() {
+      loggedInUser = null;
+      selectedUser = null;
+      pin = '';
+      switchScreen('home');
+    }
+
+    // 渲染 Dashboard 内容
+    function renderDashboard() {
+      if (!loggedInUser) return;
+
+      // 更新 Header 信息
+      const roleNames = {
+        'doctor': '医生工作台',
+        'optometrist': '视光师工作台',
+        'receptionist': '前台工作台',
+        'sales': '销售工作台'
+      };
+      document.getElementById('dashboard-role-badge').innerText = roleNames[loggedInUser.role];
+      document.getElementById('dashboard-user-avatar').innerText = loggedInUser.avatar;
+      document.getElementById('dashboard-user-avatar').className = `w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg ${loggedInUser.color}`;
+      document.getElementById('dashboard-user-name').innerText = loggedInUser.name;
+
+      const contentContainer = document.getElementById('dashboard-content');
+      let html = '';
+
+      // 根据角色渲染不同的占位面板
+      switch(loggedInUser.role) {
+        case 'receptionist':
+          html = `
+            <div class="grid grid-cols-3 gap-6 fade-in">
+              <div class="col-span-2 space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                  <h3 class="text-xl font-bold mb-4 flex items-center text-slate-800"><i class="fa-regular fa-calendar-check text-brand-500 mr-3 text-2xl"></i>今日预约总览</h3>
+                  <div class="h-64 bg-slate-50 rounded-xl border border-dashed border-slate-300 flex items-center justify-center text-slate-400 font-medium">
+                    预约列表与时间段余号展示区
+                  </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                  <h3 class="text-xl font-bold mb-4 flex items-center text-slate-800"><i class="fa-solid fa-user-plus text-brand-500 mr-3 text-xl"></i>现场代预约 / 建档</h3>
+                  <div class="h-40 bg-slate-50 rounded-xl border border-dashed border-slate-300 flex items-center justify-center text-slate-400 font-medium">
+                    扫码建档与快速排期表单区
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-6">
+                <div class="bg-amber-50 p-6 rounded-2xl border border-amber-200 shadow-sm">
+                  <h3 class="text-lg font-bold text-amber-800 mb-4 flex items-center"><i class="fa-solid fa-bell mr-2 animate-bounce"></i>实时弹窗提醒</h3>
+                  <div class="space-y-3">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-amber-100">
+                      <div class="flex justify-between items-center mb-2">
+                        <span class="px-2 py-1 bg-blue-100 text-blue-600 text-xs rounded font-bold">线上预约</span>
+                        <span class="text-xs text-slate-400">刚刚</span>
+                      </div>
+                      <p class="font-bold text-slate-800 mb-4">患者 张三 提交了初诊预约</p>
+                      <button class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-sm font-bold transition-colors">确认接诊</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                  <h3 class="text-lg font-bold mb-4 text-slate-800">快捷操作</h3>
+                  <button class="w-full py-3.5 mb-3 bg-slate-50 hover:bg-brand-50 hover:text-brand-600 border border-slate-200 hover:border-brand-200 rounded-xl font-bold text-slate-600 transition-all"><i class="fa-solid fa-plus mr-2"></i>手动加号 (突破限制)</button>
+                  <button class="w-full py-3.5 bg-slate-50 hover:bg-brand-50 hover:text-brand-600 border border-slate-200 hover:border-brand-200 rounded-xl font-bold text-slate-600 transition-all"><i class="fa-solid fa-users mr-2"></i>家庭组管理</button>
+                </div>
+              </div>
+            </div>
+          `;
+          break;
+        case 'doctor':
+          html = `
+            <div class="grid grid-cols-3 gap-6 fade-in">
+              <div class="col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-[calc(100vh-8rem)] overflow-y-auto">
+                <h3 class="text-xl font-bold mb-6 flex items-center text-slate-800"><i class="fa-solid fa-list-ul text-blue-500 mr-3 text-xl"></i>今日接诊队列</h3>
+                <div class="space-y-4">
+                  <div class="p-4 rounded-xl border-2 border-blue-500 bg-blue-50 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                    <div class="flex justify-between items-start">
+                      <div>
+                        <p class="font-bold text-slate-800 text-lg">李四 <span class="text-sm font-normal text-blue-600 bg-blue-100 px-2 py-0.5 rounded ml-1">初诊</span></p>
+                        <p class="text-sm text-slate-500 mt-2"><i class="fa-regular fa-clock mr-1"></i> 10:00 - 10:30</p>
+                      </div>
+                      <button class="px-3 py-1.5 bg-blue-500 text-white text-sm rounded-lg font-medium">接诊中</button>
+                    </div>
+                  </div>
+                  <div class="p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-300 cursor-pointer transition-colors">
+                    <p class="font-bold text-slate-800 text-lg">王五 <span class="text-sm font-normal text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded ml-1">复查</span></p>
+                    <p class="text-sm text-slate-500 mt-2"><i class="fa-regular fa-clock mr-1"></i> 10:30 - 11:00</p>
+                  </div>
+                  <div class="p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-300 cursor-pointer transition-colors">
+                    <p class="font-bold text-slate-800 text-lg">赵六 <span class="text-sm font-normal text-amber-600 bg-amber-100 px-2 py-0.5 rounded ml-1">特需</span></p>
+                    <p class="text-sm text-slate-500 mt-2"><i class="fa-regular fa-clock mr-1"></i> 11:00 - 11:30</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-span-2 space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                  <h3 class="text-xl font-bold mb-4 flex items-center text-slate-800"><i class="fa-regular fa-address-card text-blue-500 mr-3 text-xl"></i>患者信息一屏展示</h3>
+                  <div class="h-64 bg-slate-50 rounded-xl border border-dashed border-slate-300 flex items-center justify-center text-slate-400 font-medium">
+                    姓名、既往病史、是否带镜、复查记录展示区
+                  </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                  <h3 class="text-xl font-bold mb-4 flex items-center text-slate-800"><i class="fa-solid fa-file-medical text-blue-500 mr-3 text-xl"></i>一键开单</h3>
+                  <div class="grid grid-cols-3 gap-4">
+                    <button class="h-28 bg-blue-50 hover:bg-blue-100 border border-blue-100 text-blue-700 rounded-xl font-bold flex flex-col items-center justify-center transition-colors text-lg">
+                      <i class="fa-solid fa-prescription text-2xl mb-2"></i> 开具处方
+                    </button>
+                    <button class="h-28 bg-blue-50 hover:bg-blue-100 border border-blue-100 text-blue-700 rounded-xl font-bold flex flex-col items-center justify-center transition-colors text-lg">
+                      <i class="fa-solid fa-stethoscope text-2xl mb-2"></i> 开检查单
+                    </button>
+                    <button class="h-28 bg-blue-50 hover:bg-blue-100 border border-blue-100 text-blue-700 rounded-xl font-bold flex flex-col items-center justify-center transition-colors text-lg">
+                      <i class="fa-solid fa-glasses text-2xl mb-2"></i> 开验光单
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          break;
+        case 'optometrist':
+          html = `
+            <div class="grid grid-cols-2 gap-6 fade-in h-full">
+              <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
+                <div class="w-28 h-28 bg-brand-50 rounded-full flex items-center justify-center mb-6">
+                  <i class="fa-solid fa-door-open text-5xl text-brand-500"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-800">当前未占位诊室</h3>
+                <p class="text-slate-500 mt-3 mb-8">请选择您当前所在的诊室，系统将自动同步门口屏幕</p>
+                
+                <div class="grid grid-cols-2 gap-4 w-full max-w-md">
+                  <button class="py-5 bg-white border-2 border-slate-200 rounded-xl font-bold text-slate-600 hover:border-brand-500 hover:text-brand-600 hover:bg-brand-50 transition-all text-lg">201 诊室</button>
+                  <button class="py-5 bg-white border-2 border-slate-200 rounded-xl font-bold text-slate-600 hover:border-brand-500 hover:text-brand-600 hover:bg-brand-50 transition-all text-lg">202 诊室</button>
+                  <button class="py-5 bg-white border-2 border-slate-200 rounded-xl font-bold text-slate-600 hover:border-brand-500 hover:text-brand-600 hover:bg-brand-50 transition-all text-lg">301 诊室</button>
+                  <button class="py-5 bg-white border-2 border-slate-200 rounded-xl font-bold text-slate-600 hover:border-brand-500 hover:text-brand-600 hover:bg-brand-50 transition-all text-lg">302 诊室</button>
+                </div>
+              </div>
+              <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                <h3 class="text-xl font-bold mb-6 flex items-center text-slate-800"><i class="fa-solid fa-laptop-medical text-brand-500 mr-3 text-xl"></i>验光操作台</h3>
+                <div class="flex-1 bg-slate-50 rounded-xl border border-dashed border-slate-300 flex flex-col items-center justify-center text-slate-400 space-y-6">
+                  <i class="fa-solid fa-clipboard-list text-6xl text-slate-200"></i>
+                  <p class="font-medium">选择诊室后，点击下方按钮开始接诊</p>
+                  <button class="px-10 py-4 bg-brand-500 text-white rounded-full font-bold shadow-lg opacity-50 cursor-not-allowed text-lg"><i class="fa-solid fa-play mr-2"></i>开始接诊</button>
+                </div>
+              </div>
+            </div>
+          `;
+          break;
+        case 'sales':
+          html = `
+            <div class="bg-white p-12 rounded-2xl shadow-sm border border-slate-100 h-full flex flex-col items-center justify-center text-slate-400 fade-in">
+              <div class="w-32 h-32 bg-purple-50 rounded-full flex items-center justify-center mb-6">
+                <i class="fa-solid fa-hand-holding-dollar text-6xl text-purple-300"></i>
+              </div>
+              <p class="text-2xl font-bold text-slate-600 mb-3">销售面板占位</p>
+              <p class="text-lg">客户档案查看 / 销售开单 / 回访记录</p>
+            </div>
+          `;
+          break;
+      }
+
+      contentContainer.innerHTML = html;
+    }
+  </script>
+</body>
+</html>
