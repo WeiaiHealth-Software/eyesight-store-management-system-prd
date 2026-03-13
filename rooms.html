@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>诊室管理 - 惟翎</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = { theme: { extend: { colors: { brand: { 50: '#ecfdf5', 100: '#d1fae5', 500: '#10b981', 600: '#059669', 900: '#064e3b' } } } } }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex flex-col overflow-hidden">
+
+  <!-- 顶部导航 -->
+  <header class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shrink-0">
+    <div class="flex items-center space-x-3">
+      <div class="w-9 h-9 bg-brand-50 rounded-lg flex items-center justify-center text-brand-600"><i class="fa-solid fa-door-open text-lg"></i></div>
+      <h1 class="text-xl font-bold text-slate-800">诊室管理</h1>
+    </div>
+    <button onclick="openModal()" class="px-4 py-2 bg-brand-500 text-white rounded-lg hover:bg-brand-600 transition-colors text-sm font-medium shadow-sm flex items-center">
+      <i class="fa-solid fa-plus mr-2"></i> 新增诊室
+    </button>
+  </header>
+
+  <!-- 主体内容：卡片网格 -->
+  <main class="flex-1 overflow-y-auto p-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6" id="room-grid">
+      <!-- 动态渲染 -->
+    </div>
+  </main>
+
+  <!-- 新增/编辑弹窗 -->
+  <div id="room-modal" class="hidden fixed inset-0 bg-slate-900/40 z-50 flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-2xl w-[400px] max-w-full overflow-hidden flex flex-col">
+      <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+        <h3 class="text-lg font-bold text-slate-800">编辑诊室信息</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+      </div>
+      <div class="p-6 space-y-4">
+        <div class="space-y-1"><label class="text-xs font-bold text-slate-500">门牌号 / 名称</label><input type="text" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-brand-500 outline-none" value="诊室 101"></div>
+        <div class="space-y-1"><label class="text-xs font-bold text-slate-500">主要功能</label><input type="text" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-brand-500 outline-none" value="专家门诊"></div>
+        <div class="space-y-1"><label class="text-xs font-bold text-slate-500">详细描述</label><textarea class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-brand-500 outline-none" rows="3">配备综合验光仪、裂隙灯，主要用于主任医师日常接诊。</textarea></div>
+      </div>
+      <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end space-x-3">
+        <button onclick="closeModal()" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100 text-sm">取消</button>
+        <button onclick="closeModal()" class="px-4 py-2 bg-brand-500 text-white rounded-lg hover:bg-brand-600 shadow-sm text-sm">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const rooms = [
+      { no: '诊室 101', func: '专家门诊', desc: '配备裂隙灯、眼底镜，主任医师专用。', icon: 'fa-user-doctor', color: 'text-blue-500', bg: 'bg-blue-50' },
+      { no: '诊室 102', func: '普通门诊', desc: '日常复查与初诊。', icon: 'fa-stethoscope', color: 'text-indigo-500', bg: 'bg-indigo-50' },
+      { no: '验光室 1', func: '综合验光', desc: '配备综合验光仪、电脑验光仪。', icon: 'fa-glasses', color: 'text-brand-500', bg: 'bg-brand-50' },
+      { no: '验光室 2', func: '角塑验配', desc: '配备角膜地形图仪。', icon: 'fa-eye', color: 'text-teal-500', bg: 'bg-teal-50' },
+      { no: '训练室', func: '视功能训练', desc: '配备各类弱视、调节训练设备。', icon: 'fa-gamepad', color: 'text-purple-500', bg: 'bg-purple-50' }
+    ];
+
+    document.getElementById('room-grid').innerHTML = rooms.map(r => `
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 hover:shadow-md transition-shadow group relative">
+        <button class="absolute top-4 right-4 text-slate-300 hover:text-brand-500 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-pen"></i></button>
+        <div class="w-12 h-12 rounded-xl ${r.bg} ${r.color} flex items-center justify-center text-xl mb-4"><i class="fa-solid ${r.icon}"></i></div>
+        <h3 class="text-lg font-bold text-slate-800 mb-1">${r.no}</h3>
+        <span class="inline-block px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-bold mb-3">${r.func}</span>
+        <p class="text-sm text-slate-500 line-clamp-2">${r.desc}</p>
+      </div>
+    `).join('');
+
+    function openModal() { document.getElementById('room-modal').classList.remove('hidden'); }
+    function closeModal() { document.getElementById('room-modal').classList.add('hidden'); }
+  </script>
+</body>
+</html>
