@@ -24,7 +24,7 @@ function initPersonManagement() {
                 : `<span class="px-2 py-1 bg-slate-200 text-slate-500 rounded text-xs font-bold">已离职</span><div class="text-xs text-slate-400 mt-1">离职: ${s.resignDate}</div>`}
             </td>
             <td class="py-3 px-6 text-right">
-              <button class="text-brand-500 hover:text-brand-700 text-sm font-medium mr-3 opacity-0 group-hover:opacity-100 transition-opacity">编辑</button>
+              <button class="text-primary-500 text-primary-700 text-sm font-medium mr-3">编辑</button>
             </td>
           </tr>
         `).join('');

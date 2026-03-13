@@ -69,88 +69,84 @@
         .sub-nav-inactive:hover { background-color: #f9fafb; color: #374151; }
     </style>
 </head>
-<body class="text-gray-800 font-sans antialiased h-screen flex flex-col overflow-hidden bg-[#f3f4f6]">
+<body class="text-gray-800 font-sans antialiased h-screen flex overflow-hidden bg-[#f3f4f6]">
 
-    <!-- === Level 1: 顶部主导航 (透明背景) === -->
-    <nav class="w-full flex-none py-4 px-6 z-50">
-        <div class="mx-auto flex justify-between items-center h-14">
-            <div class="flex items-center gap-10">
-                <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
-                  <svg t="1768891591029" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="14567" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64"><path d="M512.047072 64.62588c-246.254543 0-445.883163 199.62862-445.883163 445.883163s199.62862 445.883163 445.883163 445.883163 445.883163-199.62862 445.883163-445.883163S758.301616 64.62588 512.047072 64.62588zM641.561821 743.301993 368.898815 743.301993c-119.712499-34.183544-77.214593-200.275349-77.214593-200.275349 26.542516 67.160609 86.865393 67.354014 86.865393 67.354014l258.052241 2.412956c74.93569-8.55791 103.890138-72.179926 103.890138-72.178903C777.789459 754.964614 641.561821 743.301993 641.561821 743.301993zM690.974207 538.254967c-67.562768-0.00614-91.692329-82.09474-91.692329-82.09474s0.343831 80.419588-86.119403 82.013899l0 0.070608c-0.384763 0-0.73678-0.030699-1.11745-0.034792-0.381693 0.004093-0.732687 0.033769-1.11745 0.034792l0-0.070608c-86.462211-1.593288-86.119403-82.013899-86.119403-82.013899s-24.12956 82.0886-91.692329 82.09474c-103.756085 0.00921-82.039481-84.506672-82.039481-84.506672l16.987906-120.937396c0 0 2.338255-47.591925 36.097126-55.207369L510.930645 277.603529l2.232854 0 206.765157 0c33.759895 7.615445 36.097126 55.207369 36.097126 55.207369l16.987906 120.937396C773.014712 453.748295 794.730293 538.263154 690.974207 538.254967z" fill="var(--color-primary-500)" p-id="14568"></path></svg>
-                  <span class="hidden min-[1400px]:block font-bold text-3xl tracking-tight text-gray-900">眼视光门店管理系统</span>
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-72 bg-white border-r border-gray-200 flex-none flex flex-col transition-all duration-300 z-50">
+        <!-- Logo Area -->
+        <div class="h-20 flex items-center px-6 border-b border-gray-100 flex-none">
+            <div class="flex items-center gap-3 overflow-hidden whitespace-nowrap">
+                <div class="w-8 h-8 flex-none text-primary-500">
+                    <svg t="1768891591029" class="icon w-full h-full" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="14567" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M512.047072 64.62588c-246.254543 0-445.883163 199.62862-445.883163 445.883163s199.62862 445.883163 445.883163 445.883163 445.883163-199.62862 445.883163-445.883163S758.301616 64.62588 512.047072 64.62588zM641.561821 743.301993 368.898815 743.301993c-119.712499-34.183544-77.214593-200.275349-77.214593-200.275349 26.542516 67.160609 86.865393 67.354014 86.865393 67.354014l258.052241 2.412956c74.93569-8.55791 103.890138-72.179926 103.890138-72.178903C777.789459 754.964614 641.561821 743.301993 641.561821 743.301993zM690.974207 538.254967c-67.562768-0.00614-91.692329-82.09474-91.692329-82.09474s0.343831 80.419588-86.119403 82.013899l0 0.070608c-0.384763 0-0.73678-0.030699-1.11745-0.034792-0.381693 0.004093-0.732687 0.033769-1.11745 0.034792l0-0.070608c-86.462211-1.593288-86.119403-82.013899-86.119403-82.013899s-24.12956 82.0886-91.692329 82.09474c-103.756085 0.00921-82.039481-84.506672-82.039481-84.506672l16.987906-120.937396c0 0 2.338255-47.591925 36.097126-55.207369L510.930645 277.603529l2.232854 0 206.765157 0c33.759895 7.615445 36.097126 55.207369 36.097126 55.207369l16.987906 120.937396C773.014712 453.748295 794.730293 538.263154 690.974207 538.254967z" fill="currentColor" p-id="14568"></path></svg>
+                </div>
+                <span class="font-bold text-xl text-gray-900 tracking-tight sidebar-text">惟爱视觉门诊管理系统</span>
+            </div>
+        </div>
+
+        <!-- Menu Area -->
+        <div class="flex-1 overflow-y-auto py-4 px-3 space-y-1" id="sidebar-menu">
+            <!-- JS Rendered Menu -->
+        </div>
+
+        <!-- Footer Area -->
+        <div id="sidebar-footer" class="p-4 border-t border-gray-100 flex-none flex items-center justify-between">
+            <div class="flex items-center gap-3 sidebar-text overflow-hidden transition-all duration-300 ease-in-out">
+                <button class="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-500 hover:text-primary-600 hover:border-primary-200 hover:bg-primary-50 transition flex-none shadow-sm bg-white group">
+                    <i class="ph-bold ph-arrows-clockwise text-lg group-hover:rotate-180 transition-transform duration-500"></i>
+                </button>
+                <div class="flex flex-col whitespace-nowrap overflow-hidden">
+                    <span class="font-normal text-gray-900 text-sm leading-none">v1.0.0</span>
+                    <span class="text-xs text-gray-400 mt-1 font-mono">commitid</span>
+                </div>
+            </div>
+            <button onclick="toggleSidebar()" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition flex-none">
+                <i id="sidebar-toggle-icon" class="ph-bold ph-arrow-line-left text-xl"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col h-full min-w-0 bg-[#f3f4f6]">
+        <!-- Top Header -->
+        <header class="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-6 lg:px-8 flex-none z-40">
+            <!-- Left: Breadcrumb / Title -->
+             <div class="flex items-center gap-4">
+                <h2 id="page-title" class="text-xl font-bold text-gray-900">仪表盘</h2>
+                <div id="level2-menu" class="flex items-center gap-1">
+                     <!-- JS Rendered Level 2 Pills -->
+                </div>
             </div>
 
-            <!-- 一级菜单容器 (磨砂效果) -->
-            <div id="level1-menu" class="hidden md:flex bg-white/80 backdrop-blur-md p-2 rounded-full border border-white/40 shadow-sm">
-                <!-- JS 渲染 -->
-            </div>
+            <!-- Right: Actions & User -->
+            <div class="flex items-center gap-4">
 
-            <!-- 右侧用户区 -->
-            <div class="flex items-center gap-2">
-                <button class="w-12 h-12 rounded-full bg-white hover:bg-gray-50 flex items-center justify-center text-gray-500 shadow-sm relative transition">
-                    <i class="ph-bold ph-bell text-2xl"></i>
-                    <span class="absolute top-2 right-2.5 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+                <div class="h-6 w-px bg-gray-200 mx-2"></div>
+
+                <!-- Notification -->
+                 <button class="relative text-gray-500 hover:text-gray-700 transition">
+                    <i class="ph-bold ph-bell text-xl"></i>
+                    <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
                 </button>
-                <!-- System Settings Button -->
-                <button onclick="toggleSettingsDrawer()" class="w-12 h-12 rounded-full bg-white hover:bg-gray-50 flex items-center justify-center text-gray-500 shadow-sm transition ml-2" title="系统设置">
-                    <i class="ph-bold ph-gear text-2xl"></i>
+
+                <!-- Settings -->
+                <button onclick="toggleSettingsDrawer()" class="text-gray-500 hover:text-gray-700 transition" title="系统设置">
+                    <i class="ph-bold ph-gear text-xl"></i>
                 </button>
-                <div class="flex items-center gap-3 pl-4 border-l border-gray-300/50">
-                    <div class="text-right hidden lg:block leading-tight">
+                
+                <!-- User Profile -->
+                <div class="flex items-center gap-3 pl-2 cursor-pointer hover:opacity-80 transition">
+                    <img class="h-8 w-8 rounded-full object-cover border border-gray-200 shadow-sm" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80">
+                    <div class="hidden lg:block leading-tight">
                         <p class="font-bold text-sm text-gray-900">张店长</p>
-                        <p class="text-gray-500 text-xs">北京旗舰店</p>
+                        <p class="text-gray-500 text-[10px]">北京旗舰店</p>
                     </div>
-                    <img class="h-9 w-9 rounded-full object-cover border-2 border-white shadow-sm" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80">
                 </div>
             </div>
-        </div>
-    </nav>
+        </header>
 
-    <!-- === Level 2: 二级功能导航栏 (卡片式悬浮) === -->
-    <!-- 关键修改：增加了 px-6 lg:px-8 让其有边距，内部是 max-w-[1800px] -->
-    <div class="w-full flex-none px-6 z-40">
-        <div class="mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 h-20 flex items-center justify-between px-6 lg:px-8">
-            <!-- 左侧：大标题 + 竖线 + Pill 菜单 -->
-            <div class="flex items-center gap-8 h-full">
-                <!-- 标题放大 -->
-                <h2 id="page-title" class="text-2xl font-bold text-gray-900 tracking-tight">仪表盘</h2>
-                
-                <div class="h-8 w-px bg-gray-200"></div> <!-- 分割线 -->
-                
-                <div id="level2-menu" class="flex items-center gap-2">
-                    <!-- JS 渲染二级菜单 -->
-                </div>
-            </div>
-
-            <!-- 右侧：页面级筛选器 -->
-            <div class="flex items-center gap-3">
-                <div class="relative group">
-                    <button class="flex items-center gap-2 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 px-3 py-2 rounded-lg border border-gray-200 transition">
-                        <i class="ph-bold ph-calendar-blank"></i>
-                        <span>本月 (2024-05)</span>
-                        <i class="ph-bold ph-caret-down text-xs"></i>
-                    </button>
-                </div>
-                <div class="relative">
-                    <button class="flex items-center gap-2 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 px-3 py-2 rounded-lg border border-gray-200 transition">
-                        <i class="ph-bold ph-storefront"></i>
-                        <span>全部门店</span>
-                        <i class="ph-bold ph-caret-down text-xs"></i>
-                    </button>
-                </div>
-                <button class="p-2 text-gray-400 hover:text-primary-600 transition">
-                    <i class="ph-bold ph-export text-xl"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- === Main Content: 内容区域 === -->
-    <!-- 增加 pt-6 让内容与上方卡片保持间距 -->
-    <main id="main-content" class="flex-1 w-full overflow-y-auto no-scrollbar px-6 py-4">
-        <!-- <div class="max-w-[1800px] mx-auto h-full"> -->
-        <div class="mx-auto h-full">
+        <!-- Main Content Scroll Area -->
+        <main id="main-content" class="flex-1 overflow-y-auto p-4 lg:p-6">
+             <div class="mx-auto h-full max-w-[1600px]">
             <!-- 场景 1: 仪表盘-店长视图 -->
             <div id="dashboard-view" class="h-full flex flex-col">
                 <!-- KPI 卡片 -->
@@ -282,7 +278,7 @@
             <!-- 场景 3: 人员管理 -->
             <div id="personnel-view" class="hidden h-full flex flex-col">
                 <!-- 顶部操作栏 (嵌入在内容区顶部) -->
-                <div class="flex justify-between items-center mb-4 shrink-0">
+                <div class="flex justify-between items-center mb-2 shrink-0">
                      <!-- 搜索和筛选 -->
                     <div class="bg-white p-2 rounded-xl border border-gray-200 shadow-sm flex space-x-2">
                       <div class="max-w-xs relative">
@@ -310,7 +306,7 @@
                 </div>
 
                 <!-- 表格区 -->
-                <div class="bg-white border border-gray-200 rounded-xl shadow-sm flex-1 overflow-hidden flex flex-col">
+                <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
                   <div class="overflow-y-auto flex-1">
                     <table class="w-full text-left border-collapse">
                       <thead class="bg-gray-50 sticky top-0 z-10 border-b border-gray-200">
@@ -466,7 +462,7 @@
             });
 
             // Re-render charts if they exist
-            if (currentL1 === 'dashboard' && currentL2 === 'store_view') {
+            if (currentL1 === 'dashboard' && currentL2 === null) {
                 initCharts();
             }
         }
@@ -496,11 +492,7 @@
         const menuConfig = {
             dashboard: {
                 id: 'dashboard', icon: 'ph-squares-four', label: '仪表盘',
-                subs: [
-                    { id: 'store_view', label: '门店经营概览', features: [] },
-                    { id: 'doctor_view', label: '医生个人看板', features: ['我的今日排班', '个人业绩进度条', '今日预约患者列表', '待复查患者提醒'] },
-                    { id: 'front_view', label: '前台工作台', features: ['今日预约看板', '现场快速登记', '待服务队列', '爽约记录处理'] }
-                ]
+                subs: []
             },
             analytics: {
                 id: 'analytics', icon: 'ph-chart-bar', label: '数据分析',
@@ -550,44 +542,173 @@
         };
 
         let currentL1 = 'dashboard';
-        let currentL2 = 'store_view';
+        let currentL2 = null;
+        let isSidebarCollapsed = false;
+        let expandedMenus = new Set();
 
-        function renderApp() { renderLevel1(); renderLevel2(); renderContent(); }
+        function findParentL1BySubId(subId) {
+            const entry = Object.values(menuConfig).find(item => (item.subs || []).some(sub => sub.id === subId));
+            return entry ? entry.id : null;
+        }
 
-        function renderLevel1() {
-            document.getElementById('level1-menu').innerHTML = Object.values(menuConfig).map(item => `
-                <button onclick="switchLevel1('${item.id}')" 
-                    class="px-5 py-2 rounded-full text-lg font-medium flex items-center gap-2 transition 
-                    ${currentL1 === item.id ? 'nav-active shadow-md' : 'nav-inactive'}">
-                    <i class="ph-bold ${item.icon}"></i> ${item.label}
-                </button>
-            `).join('');
+        function renderApp() { renderSidebar(); renderLevel2(); renderContent(); }
+
+        function toggleSidebar() {
+            isSidebarCollapsed = !isSidebarCollapsed;
+            const sidebar = document.getElementById('sidebar');
+            const footer = document.getElementById('sidebar-footer');
+            const icon = document.getElementById('sidebar-toggle-icon');
+            const texts = document.querySelectorAll('.sidebar-text');
+            
+            if (isSidebarCollapsed) {
+                sidebar.classList.remove('w-64');
+                sidebar.classList.add('w-20');
+                footer.classList.remove('justify-between');
+                footer.classList.add('justify-center');
+                icon.classList.remove('ph-arrow-line-left');
+                icon.classList.add('ph-arrow-line-right');
+                texts.forEach(t => t.classList.add('hidden'));
+            } else {
+                sidebar.classList.remove('w-20');
+                sidebar.classList.add('w-64');
+                footer.classList.remove('justify-center');
+                footer.classList.add('justify-between');
+                icon.classList.remove('ph-arrow-line-right');
+                icon.classList.add('ph-arrow-line-left');
+                texts.forEach(t => t.classList.remove('hidden'));
+            }
+            renderSidebar();
+        }
+
+        window.switchLevel1 = (id) => {
+            const item = menuConfig[id];
+            if (!item) return;
+
+            if (!item.subs || item.subs.length === 0) {
+                currentL1 = id;
+                currentL2 = null;
+                renderApp();
+                return;
+            }
+
+            if (expandedMenus.has(id)) {
+                expandedMenus.delete(id);
+            } else {
+                expandedMenus.add(id);
+            }
+            renderSidebar();
+        };
+
+        window.switchLevel2 = (id, event) => {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            const parentId = findParentL1BySubId(id);
+            if (!parentId) return;
+            currentL1 = parentId;
+            currentL2 = id;
+            expandedMenus.add(parentId);
+            renderSidebar();
+            renderLevel2();
+            renderContent();
+        };
+
+        function renderSidebar() {
+            const menuContainer = document.getElementById('sidebar-menu');
+            menuContainer.innerHTML = Object.values(menuConfig).map(item => {
+                const hasSubs = !!(item.subs && item.subs.length);
+                const isL1PageActive = currentL2 === null && currentL1 === item.id;
+                const isL2ParentActive = currentL2 !== null && (item.subs || []).some(sub => sub.id === currentL2);
+                const isExpanded = hasSubs && expandedMenus.has(item.id);
+                const baseClasses = "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 group w-full text-left";
+                const l1ActiveClasses = "bg-primary-50 text-primary-600";
+                const l2ParentActiveClasses = "bg-transparent text-gray-900";
+                const expandedOnlyClasses = "text-gray-700 bg-gray-50/60";
+                const inactiveClasses = "text-gray-600 hover:bg-gray-50 hover:text-gray-900";
+                const stateClasses = isL1PageActive
+                    ? l1ActiveClasses
+                    : isL2ParentActive
+                        ? l2ParentActiveClasses
+                        : isExpanded
+                            ? expandedOnlyClasses
+                            : inactiveClasses;
+                const iconClasses = isL1PageActive || isL2ParentActive
+                    ? "text-primary-600"
+                    : "text-gray-400 group-hover:text-gray-600";
+                const labelClasses = isL1PageActive
+                    ? "text-primary-600 font-semibold"
+                    : isL2ParentActive
+                        ? "text-gray-900 font-medium"
+                        : "text-inherit";
+                const l1BorderClasses = isL1PageActive
+                    ? "border-l-2 border-primary-500"
+                    : "border-l-2 border-transparent";
+                
+                let submenuHtml = '';
+                if (hasSubs && isExpanded && !isSidebarCollapsed) {
+                    submenuHtml = `
+                        <div class="ml-4 pl-4 border-l border-gray-200 space-y-1 mt-1 submenu-container">
+                            ${item.subs.map(sub => `
+                                <button onclick="switchLevel2('${sub.id}', event)" 
+                                    class="block w-full text-left px-3 py-2 rounded-md text-sm transition-colors border-l-2 ${currentL2 === sub.id ? 'border-primary-500 text-primary-700 font-semibold bg-primary-50' : 'border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50 hover:border-primary-300'}">
+                                    ${sub.label}
+                                </button>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                return `
+                <div class="mb-1">
+                    <button onclick="switchLevel1('${item.id}')" 
+                        class="${baseClasses} ${stateClasses} ${l1BorderClasses}"
+                        title="${isSidebarCollapsed ? item.label : ''}">
+                        <i class="ph-bold ${item.icon} text-xl flex-none ${iconClasses}"></i>
+                        <span class="font-medium whitespace-nowrap sidebar-text ${isSidebarCollapsed ? 'hidden' : ''} flex-1 ${labelClasses}">${item.label}</span>
+                        ${hasSubs && !isSidebarCollapsed ? `<i class="ph-bold ph-caret-down text-xs text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''} sidebar-text"></i>` : ''}
+                    </button>
+                    ${submenuHtml}
+                </div>
+            `}).join('');
         }
 
         function renderLevel2() {
             const config = menuConfig[currentL1];
             document.getElementById('page-title').innerText = config.label;
-            document.getElementById('level2-menu').innerHTML = config.subs.map(sub => `
-                <button onclick="switchLevel2('${sub.id}')"
-                    class="px-5 py-2 rounded-lg text-md transition cursor-pointer whitespace-nowrap
-                    ${currentL2 === sub.id ? 'sub-nav-active' : 'sub-nav-inactive'}">
-                    ${sub.label}
-                </button>
-            `).join('');
+            const level2Menu = document.getElementById('level2-menu');
+            if (!level2Menu) return;
+
+            if (currentL2) {
+                const currentSub = (config.subs || []).find(sub => sub.id === currentL2);
+                if (currentSub) {
+                    level2Menu.innerHTML = `
+                        <div class="flex items-center gap-2 text-sm font-medium text-gray-500">
+                            <i class="ph-bold ph-caret-right text-xs"></i>
+                            <span class="text-gray-900">${currentSub.label}</span>
+                        </div>
+                    `;
+                } else {
+                    level2Menu.innerHTML = '';
+                }
+            } else {
+                level2Menu.innerHTML = '';
+            }
         }
 
         function renderContent() {
             const dashboardEl = document.getElementById('dashboard-view');
             const genericEl = document.getElementById('generic-view');
             const personnelEl = document.getElementById('personnel-view');
-            const sub = menuConfig[currentL1].subs.find(s => s.id === currentL2);
+            const config = menuConfig[currentL1];
+            const sub = currentL2 ? (config.subs || []).find(s => s.id === currentL2) : null;
 
             // Hide all first
             dashboardEl.classList.add('hidden');
             genericEl.classList.add('hidden');
             if (personnelEl) personnelEl.classList.add('hidden');
 
-            if (currentL1 === 'dashboard' && currentL2 === 'store_view') {
+            if (currentL1 === 'dashboard' && currentL2 === null) {
                 dashboardEl.classList.remove('hidden');
                 initCharts();
             } else if (currentL1 === 'store_mgmt' && currentL2 === 'doctor_mgmt') {
@@ -595,7 +716,7 @@
                     personnelEl.classList.remove('hidden');
                     if (window.initPersonManagement) window.initPersonManagement();
                 }
-            } else {
+            } else if (sub) {
                 genericEl.classList.remove('hidden');
                 document.getElementById('generic-title').innerText = sub.label;
                 document.getElementById('generic-icon').className = `ph-duotone ${getIconForSection(currentL1)} text-5xl text-primary-500`;
@@ -607,6 +728,11 @@
                         <span class="text-sm text-gray-700 font-medium group-hover:text-gray-900">${f}</span>
                     </div>
                 `).join('');
+            } else {
+                genericEl.classList.remove('hidden');
+                document.getElementById('generic-title').innerText = config.label;
+                document.getElementById('generic-icon').className = `ph-duotone ${getIconForSection(currentL1)} text-5xl text-primary-500`;
+                document.getElementById('feature-list').innerHTML = '';
             }
         }
 
@@ -614,9 +740,6 @@
             const map = { dashboard: 'ph-squares-four', analytics: 'ph-chart-bar', crm: 'ph-users', store_mgmt: 'ph-storefront', inventory: 'ph-package', pos: 'ph-receipt' };
             return map[id] || 'ph-circles-four';
         }
-
-        window.switchLevel1 = (id) => { currentL1 = id; currentL2 = menuConfig[id].subs[0].id; renderApp(); };
-        window.switchLevel2 = (id) => { currentL2 = id; renderLevel2(); renderContent(); };
 
         let charts = {};
         function initCharts() {
