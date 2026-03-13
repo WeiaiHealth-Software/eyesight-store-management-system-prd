@@ -72,14 +72,13 @@
 <body class="text-gray-800 font-sans antialiased h-screen flex flex-col overflow-hidden bg-[#f3f4f6]">
 
     <!-- === Level 1: 顶部主导航 (透明背景) === -->
-    <nav class="w-full flex-none py-4 px-6 lg:px-8 z-50">
+    <nav class="w-full flex-none py-4 px-6 z-50">
         <div class="mx-auto flex justify-between items-center h-14">
             <div class="flex items-center gap-10">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
                   <svg t="1768891591029" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="14567" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64"><path d="M512.047072 64.62588c-246.254543 0-445.883163 199.62862-445.883163 445.883163s199.62862 445.883163 445.883163 445.883163 445.883163-199.62862 445.883163-445.883163S758.301616 64.62588 512.047072 64.62588zM641.561821 743.301993 368.898815 743.301993c-119.712499-34.183544-77.214593-200.275349-77.214593-200.275349 26.542516 67.160609 86.865393 67.354014 86.865393 67.354014l258.052241 2.412956c74.93569-8.55791 103.890138-72.179926 103.890138-72.178903C777.789459 754.964614 641.561821 743.301993 641.561821 743.301993zM690.974207 538.254967c-67.562768-0.00614-91.692329-82.09474-91.692329-82.09474s0.343831 80.419588-86.119403 82.013899l0 0.070608c-0.384763 0-0.73678-0.030699-1.11745-0.034792-0.381693 0.004093-0.732687 0.033769-1.11745 0.034792l0-0.070608c-86.462211-1.593288-86.119403-82.013899-86.119403-82.013899s-24.12956 82.0886-91.692329 82.09474c-103.756085 0.00921-82.039481-84.506672-82.039481-84.506672l16.987906-120.937396c0 0 2.338255-47.591925 36.097126-55.207369L510.930645 277.603529l2.232854 0 206.765157 0c33.759895 7.615445 36.097126 55.207369 36.097126 55.207369l16.987906 120.937396C773.014712 453.748295 794.730293 538.263154 690.974207 538.254967z" fill="var(--color-primary-500)" p-id="14568"></path></svg>
                   <span class="hidden min-[1400px]:block font-bold text-3xl tracking-tight text-gray-900">眼视光门店管理系统</span>
-                </div>
             </div>
 
             <!-- 一级菜单容器 (磨砂效果) -->
@@ -110,7 +109,7 @@
 
     <!-- === Level 2: 二级功能导航栏 (卡片式悬浮) === -->
     <!-- 关键修改：增加了 px-6 lg:px-8 让其有边距，内部是 max-w-[1800px] -->
-    <div class="w-full flex-none px-6 lg:px-8 mt-2 z-40">
+    <div class="w-full flex-none px-6 z-40">
         <div class="mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 h-20 flex items-center justify-between px-6 lg:px-8">
             <!-- 左侧：大标题 + 竖线 + Pill 菜单 -->
             <div class="flex items-center gap-8 h-full">
@@ -149,7 +148,7 @@
 
     <!-- === Main Content: 内容区域 === -->
     <!-- 增加 pt-6 让内容与上方卡片保持间距 -->
-    <main id="main-content" class="flex-1 w-full overflow-y-auto no-scrollbar px-6 py-4 lg:px-8 py-6">
+    <main id="main-content" class="flex-1 w-full overflow-y-auto no-scrollbar px-6 py-4">
         <!-- <div class="max-w-[1800px] mx-auto h-full"> -->
         <div class="mx-auto h-full">
             <!-- 场景 1: 仪表盘-店长视图 -->
@@ -277,6 +276,57 @@
                     <div id="feature-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- JS 填充 -->
                     </div>
+                </div>
+            </div>
+
+            <!-- 场景 3: 人员管理 -->
+            <div id="personnel-view" class="hidden h-full flex flex-col">
+                <!-- 顶部操作栏 (嵌入在内容区顶部) -->
+                <div class="flex justify-between items-center mb-4 shrink-0">
+                     <!-- 搜索和筛选 -->
+                    <div class="bg-white p-2 rounded-xl border border-gray-200 shadow-sm flex space-x-2">
+                      <div class="max-w-xs relative">
+                        <i class="ph-bold ph-magnifying-glass absolute left-3 top-2.5 text-gray-400"></i>
+                        <input type="text" placeholder="搜索姓名/职称..." class="w-64 pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-primary-500 transition">
+                      </div>
+                      <select class="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-primary-500 text-gray-600 bg-white">
+                        <option value="">全部角色</option>
+                        <option value="doctor">医生</option>
+                        <option value="optometrist">视光师</option>
+                        <option value="trainer">视训师</option>
+                        <option value="receptionist">前台</option>
+                        <option value="sales">销售</option>
+                      </select>
+                      <select class="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-primary-500 text-gray-600 bg-white">
+                        <option value="active">在职</option>
+                        <option value="resigned">已离职</option>
+                      </select>
+                    </div>
+                    
+                    <!-- 录入按钮 -->
+                    <button onclick="openPersonModal()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors text-sm font-medium shadow-sm flex items-center">
+                      <i class="ph-bold ph-plus mr-2"></i> 录入人员
+                    </button>
+                </div>
+
+                <!-- 表格区 -->
+                <div class="bg-white border border-gray-200 rounded-xl shadow-sm flex-1 overflow-hidden flex flex-col">
+                  <div class="overflow-y-auto flex-1">
+                    <table class="w-full text-left border-collapse">
+                      <thead class="bg-gray-50 sticky top-0 z-10 border-b border-gray-200">
+                        <tr>
+                          <th class="py-3 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">人员信息</th>
+                          <th class="py-3 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">角色 / 职称</th>
+                          <th class="py-3 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">擅长描述</th>
+                          <th class="py-3 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">状态 / 时间</th>
+                          <th class="py-3 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">操作</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-gray-100" id="person-table-body">
+                        <!-- 动态渲染 -->
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
             </div>
 
@@ -529,14 +579,23 @@
         function renderContent() {
             const dashboardEl = document.getElementById('dashboard-view');
             const genericEl = document.getElementById('generic-view');
+            const personnelEl = document.getElementById('personnel-view');
             const sub = menuConfig[currentL1].subs.find(s => s.id === currentL2);
+
+            // Hide all first
+            dashboardEl.classList.add('hidden');
+            genericEl.classList.add('hidden');
+            if (personnelEl) personnelEl.classList.add('hidden');
 
             if (currentL1 === 'dashboard' && currentL2 === 'store_view') {
                 dashboardEl.classList.remove('hidden');
-                genericEl.classList.add('hidden');
                 initCharts();
+            } else if (currentL1 === 'store_mgmt' && currentL2 === 'doctor_mgmt') {
+                if (personnelEl) {
+                    personnelEl.classList.remove('hidden');
+                    if (window.initPersonManagement) window.initPersonManagement();
+                }
             } else {
-                dashboardEl.classList.add('hidden');
                 genericEl.classList.remove('hidden');
                 document.getElementById('generic-title').innerText = sub.label;
                 document.getElementById('generic-icon').className = `ph-duotone ${getIconForSection(currentL1)} text-5xl text-primary-500`;
@@ -603,5 +662,43 @@
 
         window.onload = renderApp;
     </script>
+  <!-- 录入/编辑弹窗 -->
+  <div id="personnel-modal" class="hidden fixed inset-0 bg-gray-900/40 z-[80] flex items-center justify-center backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl w-[500px] max-w-full overflow-hidden flex flex-col">
+      <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+        <h3 class="text-lg font-bold text-gray-900">录入人员信息</h3>
+        <button onclick="closePersonModal()" class="text-gray-400 hover:text-gray-600"><i class="ph-bold ph-x text-xl"></i></button>
+      </div>
+      <div class="p-6 space-y-4">
+        <div class="flex space-x-4">
+          <div class="flex-1 space-y-1"><label class="text-xs font-bold text-gray-500">姓名</label><input type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-primary-500 outline-none transition" value="李主任"></div>
+          <div class="w-24 space-y-1"><label class="text-xs font-bold text-gray-500">年龄</label><input type="number" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-primary-500 outline-none transition" value="45"></div>
+        </div>
+        <div class="flex space-x-4">
+          <div class="flex-1 space-y-1">
+            <label class="text-xs font-bold text-gray-500">角色</label>
+            <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-primary-500 outline-none bg-white transition">
+              <option selected>医生</option><option>视光师</option><option>视训师</option>
+            </select>
+          </div>
+          <div class="flex-1 space-y-1"><label class="text-xs font-bold text-gray-500">职称</label><input type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-primary-500 outline-none transition" value="副主任医师"></div>
+        </div>
+        <div class="space-y-1"><label class="text-xs font-bold text-gray-500">擅长描述</label><textarea class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-primary-500 outline-none transition" rows="2">小儿斜弱视、青少年近视防控</textarea></div>
+        <div class="flex space-x-4">
+          <div class="flex-1 space-y-1"><label class="text-xs font-bold text-gray-500">入职时间</label><input type="date" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-primary-500 outline-none transition" value="2018-05-12"></div>
+          <div class="flex-1 space-y-1">
+            <label class="text-xs font-bold text-gray-500">状态</label>
+            <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-primary-500 outline-none bg-white transition"><option selected>在职</option><option>已离职</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end space-x-3">
+        <button onclick="closePersonModal()" class="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-100 text-sm transition">取消</button>
+        <button onclick="closePersonModal()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 shadow-sm text-sm transition">保存</button>
+      </div>
+    </div>
+  </div>
+
+    <script src="src/person-management.js"></script>
 </body>
 </html>
