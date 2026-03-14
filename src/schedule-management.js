@@ -281,6 +281,50 @@ function saveScheduleCapPopover() {
     renderScheduleEditDrawer();
 }
 
+function openScheduleSettings() {
+	document.getElementById('set-am-start').value = scheduleSettings.amStart;
+	document.getElementById('set-am-end').value = scheduleSettings.amEnd;
+	document.getElementById('set-pm-start').value = scheduleSettings.pmStart;
+	document.getElementById('set-pm-end').value = scheduleSettings.pmEnd;
+	document.getElementById('set-duration').value = scheduleSettings.duration;
+	document.getElementById('settings-staff-list').innerHTML = STAFF.filter(s => s.role === '医生' || s.role === '视光师').map(s => `
+			<div class="flex justify-between items-center p-3 bg-white border border-slate-200 rounded-xl">
+			<div class="flex items-center space-x-3">
+					<div class="w-8 h-8 rounded-full ${s.color} text-white flex items-center justify-center text-sm font-bold">${s.name.charAt(0)}</div>
+					<div>
+					<div class="text-sm font-bold text-slate-700">${s.name}</div>
+					<div class="text-[10px] text-slate-400">${s.role === 'doctor' ? '医生' : '视光师'}</div>
+					</div>
+			</div>
+			<div class="flex items-center space-x-2">
+					<span class="text-xs text-slate-500">默认容量:</span>
+					<input type="number" id="set-cap-${s.id}" value="${s.defaultCap}" class="w-16 text-center border border-slate-200 rounded-lg py-1 text-sm focus:outline-none focus:border-brand-500" min="0">
+					<span class="text-xs text-slate-500">人/段</span>
+			</div>
+			</div>
+	`).join('');
+	document.getElementById('settings-modal').classList.remove('hidden');
+}
+
+function closeScheduleSettings() { document.getElementById('settings-modal').classList.add('hidden'); }
+
+function saveScheduleSettings() {
+	scheduleSettings.amStart = document.getElementById('set-am-start').value;
+	scheduleSettings.amEnd = document.getElementById('set-am-end').value;
+	scheduleSettings.pmStart = document.getElementById('set-pm-start').value;
+	scheduleSettings.pmEnd = document.getElementById('set-pm-end').value;
+	scheduleSettings.duration = parseInt(document.getElementById('set-duration').value);
+
+	STAFF.forEach(s => {
+			if (s.role === 'doctor' || s.role === 'optometrist') {
+			const input = document.getElementById(`set-cap-${s.id}`);
+			if (input) s.defaultCap = parseInt(input.value);
+			}
+	});
+	closeScheduleSettings();
+	alert('全局设置已保存！新排班将应用此规则。');
+}
+
 window.initOrderManagement = initOrderManagement;
 window.selectScheduleDate = selectScheduleDate;
 window.openScheduleEditDrawer = openScheduleEditDrawer;
@@ -292,3 +336,7 @@ window.openScheduleCapPopover = openScheduleCapPopover;
 window.closeScheduleCapPopover = closeScheduleCapPopover;
 window.adjustScheduleCap = adjustScheduleCap;
 window.saveScheduleCapPopover = saveScheduleCapPopover;
+
+window.openScheduleSettings = openScheduleSettings;
+window.closeScheduleSettings = closeScheduleSettings;
+window.saveScheduleSettings = saveScheduleSettings;

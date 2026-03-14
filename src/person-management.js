@@ -1,14 +1,16 @@
+const STAFF = [
+	{ id: 'd2', name: '王医生', age: 38, role: '医生', defaultCap: 3, title: '主任医师', desc: '成人斜弱视、近视防控', status: 'active', joinDate: '2015-08-20', color: 'bg-blue-500', isWorking: true },
+	{ id: 'd1', name: '李主任', age: 45, role: '医生', defaultCap: 2, title: '副主任医师', desc: '小儿斜弱视、近视防控', status: 'active', joinDate: '2018-05-12', color: 'bg-orange-500', isWorking: true },
+	{ id: 'o1', name: '张视光', age: 28, role: '视光师', defaultCap: 5, title: '高级验光员', desc: '角膜塑形镜验配、双眼视功能异常处理', status: 'active', joinDate: '2021-03-01', color: 'bg-emerald-500', isWorking: false },
+	{ id: 't1', name: '王视训', age: 26, role: '视训师', defaultCap: 5, title: '初级视训师', desc: '弱视训练、调节功能训练', status: 'active', joinDate: '2022-07-15', color: 'bg-teal-500', isWorking: false },
+	{ id: 'f1', name: '赵前台', age: 24, role: '前台', defaultCap: null, title: '接待专员', desc: '客户接待、分诊引导', status: 'resigned', joinDate: '2020-01-10', resignDate: '2023-09-01', color: 'bg-amber-500', isWorking: false },
+	{ id: 'r1', name: '小美', age: 28, role: '客服', defaultCap: null, title: '客户服务专员', desc: '客户咨询、问题解决', status: 'active', joinDate: '2023-01-01', color: 'bg-amber-500', isWorking: false },
+	{ id: 's1', name: '大强', age: 32, role: '销售', defaultCap: null, title: '销售代表', desc: '客户销售、业务管理', status: 'active', joinDate: '2022-05-20', color: 'bg-purple-500', isWorking: true },
+];
 function initPersonManagement() {
-    const mockData = [
-      { name: '李主任', age: 45, role: '医生', title: '副主任医师', desc: '小儿斜弱视、近视防控', status: 'active', joinDate: '2018-05-12', color: 'bg-blue-500', isWorking: true },
-      { name: '张视光', age: 28, role: '视光师', title: '高级验光员', desc: '角膜塑形镜验配、双眼视功能异常处理', status: 'active', joinDate: '2021-03-01', color: 'bg-emerald-500', isWorking: true },
-      { name: '王视训', age: 26, role: '视训师', title: '初级视训师', desc: '弱视训练、调节功能训练', status: 'active', joinDate: '2022-07-15', color: 'bg-teal-500', isWorking: false },
-      { name: '赵前台', age: 24, role: '前台', title: '接待专员', desc: '客户接待、分诊引导', status: 'resigned', joinDate: '2020-01-10', resignDate: '2023-09-01', color: 'bg-amber-500', isWorking: false }
-    ];
-
     const tableBody = document.getElementById('person-table-body');
     if (tableBody) {
-        tableBody.innerHTML = mockData.map(s => `
+        tableBody.innerHTML = STAFF.map(s => `
           <tr class="hover:bg-slate-50 transition-colors group">
             <td class="py-3 px-6">
               <div class="flex items-center space-x-3">

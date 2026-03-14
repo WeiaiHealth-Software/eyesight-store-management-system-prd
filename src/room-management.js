@@ -53,7 +53,7 @@ function renderRooms(rooms) {
               <span class="w-px h-4 bg-gray-200"></span>
               <button onclick="openDeleteRoomConfirm('${r.roomNo}')" class="px-2.5 py-1.5 text-red-400 hover:text-red-600 transition"><i class="ph-bold ph-trash"></i></button>
             </div>
-            <div class="flex items-start gap-3 pr-20">
+            <div class="flex items-start gap-3 pr-10">
               <div class="w-16 h-16 rounded-xl ${r.bg} ${r.color} flex items-center justify-center text-2xl shrink-0"><i class="ph-fill ${r.icon}"></i></div>
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-2">
