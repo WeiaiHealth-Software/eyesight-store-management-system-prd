@@ -348,32 +348,36 @@
             </div>
 
             <div id="schedule-view" class="hidden h-full flex flex-col">
-                <div class="bg-white border border-gray-200 rounded-2xl px-5 py-4 flex justify-between items-center shrink-0 mb-3">
-                    <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center text-primary-600">
-                            <i class="ph-bold ph-calendar-blank text-lg"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-gray-900">排班与诊室分配</h3>
-                    </div>
-                    <button class="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 hover:text-primary-600 transition-colors text-sm font-medium flex items-center shadow-sm">
-                        <i class="ph-bold ph-sliders mr-2"></i> 排班设置
-                    </button>
-                </div>
 
+                <div class="bg-white border border-gray-200 rounded-2xl px-5 py-4 flex justify-between items-center shrink-0 mb-4">
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center text-primary-600">
+                                <i class="ph-bold ph-calendar-blank text-lg"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900">排班与诊室分配</h3>
+                        </div>
+                        <div class="h-6 w-px bg-gray-200"></div>
+                        <div class="flex items-center gap-2">
+                            <h2 id="schedule-main-title" class="text-base font-semibold text-gray-900">10月24日 排班详情</h2>
+                            <span id="schedule-main-status" class="px-2.5 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">已排班</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="openScheduleEditDrawer()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors text-sm font-medium shadow-sm shadow-primary-500/20 flex items-center">
+                            <i class="ph-bold ph-note-pencil mr-2"></i> 编辑排班
+                        </button>
+                        <button class="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 hover:text-primary-600 transition-colors text-sm font-medium flex items-center shadow-sm">
+                            <i class="ph-bold ph-sliders mr-2"></i> 排班设置
+                        </button>
+                    </div>
+                </div>
+                
                 <div class="bg-white border border-gray-200 rounded-xl px-4 py-2 shrink-0 mb-3">
                     <div id="schedule-date-strip" class="flex gap-2 overflow-x-auto no-scrollbar"></div>
                 </div>
 
                 <div class="flex-1 overflow-hidden flex flex-col">
-                    <div class="flex justify-between items-center mb-4 shrink-0">
-                        <div class="flex items-center gap-3">
-                            <h2 id="schedule-main-title" class="text-xl font-bold text-gray-900">10月24日 排班详情</h2>
-                            <span id="schedule-main-status" class="px-2.5 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">已排班</span>
-                        </div>
-                        <button onclick="openScheduleEditDrawer()" class="px-5 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors text-sm font-medium shadow-md shadow-primary-500/20 flex items-center">
-                            <i class="ph-bold ph-note-pencil mr-2"></i> 编辑排班
-                        </button>
-                    </div>
 
                     <div class="flex-1 flex gap-6 overflow-hidden">
                         <div class="w-1/3 flex flex-col gap-4">
