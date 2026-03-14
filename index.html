@@ -326,6 +326,27 @@
                 </div>
             </div>
 
+            <!-- 场景 4: 诊室管理 -->
+            <div id="room-mgmt-view" class="hidden h-full flex flex-col">
+                <div class="flex justify-between items-center mb-6 shrink-0">
+                    <div class="flex bg-white p-1 rounded-lg border border-gray-200 shadow-sm">
+                        <button onclick="filterRooms('all')" id="filter-all" class="px-4 py-1.5 bg-primary-500 rounded-md text-sm font-semibold text-white transition-all">全部</button>
+                        <button onclick="filterRooms('consultation')" id="filter-consultation" class="px-4 py-1.5 text-sm font-medium text-gray-600 hover:text-primary-600 transition-all">诊室</button>
+                        <button onclick="filterRooms('optometry')" id="filter-optometry" class="px-4 py-1.5 text-sm font-medium text-gray-600 hover:text-primary-600 transition-all">验光室</button>
+                        <button onclick="filterRooms('training')" id="filter-training" class="px-4 py-1.5 text-sm font-medium text-gray-600 hover:text-primary-600 transition-all">训练室</button>
+                    </div>
+                    <button onclick="openRoomDrawer()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors text-sm font-medium shadow-sm flex items-center">
+                      <i class="ph-bold ph-plus mr-2"></i> 新增诊室
+                    </button>
+                </div>
+                
+                <div class="flex-1 overflow-y-auto pb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6" id="room-grid">
+                      <!-- 动态渲染 -->
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 
@@ -700,6 +721,7 @@
             const dashboardEl = document.getElementById('dashboard-view');
             const genericEl = document.getElementById('generic-view');
             const personnelEl = document.getElementById('personnel-view');
+            const roomMgmtEl = document.getElementById('room-mgmt-view');
             const config = menuConfig[currentL1];
             const sub = currentL2 ? (config.subs || []).find(s => s.id === currentL2) : null;
 
@@ -707,6 +729,7 @@
             dashboardEl.classList.add('hidden');
             genericEl.classList.add('hidden');
             if (personnelEl) personnelEl.classList.add('hidden');
+            if (roomMgmtEl) roomMgmtEl.classList.add('hidden');
 
             if (currentL1 === 'dashboard' && currentL2 === null) {
                 dashboardEl.classList.remove('hidden');
@@ -715,6 +738,11 @@
                 if (personnelEl) {
                     personnelEl.classList.remove('hidden');
                     if (window.initPersonManagement) window.initPersonManagement();
+                }
+            } else if (currentL1 === 'store_mgmt' && currentL2 === 'room_mgmt') {
+                if (roomMgmtEl) {
+                    roomMgmtEl.classList.remove('hidden');
+                    if (window.initRoomManagement) window.initRoomManagement();
                 }
             } else if (sub) {
                 genericEl.classList.remove('hidden');
@@ -877,6 +905,98 @@
         </div>
     </div>
 
+    <!-- 诊室管理抽屉 -->
+    <div id="room-drawer-overlay" onclick="closeRoomDrawer()" class="fixed inset-0 bg-black/20 z-[60] hidden transition-opacity duration-300 opacity-0 backdrop-blur-sm"></div>
+    <div id="room-drawer" class="fixed top-0 right-0 h-full w-[500px] bg-white shadow-2xl z-[70] transform translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <h2 id="room-drawer-title" class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <i class="ph-duotone ph-door-open text-primary-600"></i> 编辑诊室信息
+            </h2>
+            <button onclick="closeRoomDrawer()" class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition">
+                <i class="ph-bold ph-x text-lg"></i>
+            </button>
+        </div>
+        
+        <div class="p-6 overflow-y-auto flex-1 bg-white space-y-6">
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">门牌号 <span class="text-red-500">*</span></label>
+                <input id="room-input-no" type="text" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 outline-none transition bg-gray-50/50 focus:bg-white" value="101" placeholder="例如：101">
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">诊室名称 </label>
+                <input id="room-input-name" type="text" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 outline-none transition bg-gray-50/50 focus:bg-white" value="专家门诊" placeholder="例如：专家门诊">
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">类型</label>
+                    <div class="relative">
+                        <select id="room-input-type" class="w-full appearance-none border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 outline-none bg-gray-50/50 focus:bg-white transition pr-8">
+                            <option selected>诊室</option>
+                            <option>验光室</option>
+                            <option>训练室</option>
+                        </select>
+                        <i class="ph-bold ph-caret-down absolute right-3 top-3 text-gray-400 pointer-events-none"></i>
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                        容量 
+                        <div class="group relative">
+                            <i class="ph-fill ph-question text-gray-400 cursor-help"></i>
+                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">
+                                指同时可以容纳多少医护人员工作（不包含患者）
+                                <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                            </div>
+                        </div>
+                    </label>
+                    <input id="room-input-capacity" type="number" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 outline-none transition bg-gray-50/50 focus:bg-white" value="1" min="1">
+                </div>
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">诊室状态</label>
+                <div class="relative">
+                    <select id="room-input-status" class="w-full appearance-none border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 outline-none bg-gray-50/50 focus:bg-white transition pr-8">
+                        <option selected>启用中</option>
+                        <option>维修中</option>
+                        <option>已废弃</option>
+                    </select>
+                    <i class="ph-bold ph-caret-down absolute right-3 top-3 text-gray-400 pointer-events-none"></i>
+                </div>
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">功能描述</label>
+                <textarea id="room-input-desc" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 outline-none transition bg-gray-50/50 focus:bg-white resize-none" rows="4" placeholder="请输入诊室设备配置或主要用途...">配备综合验光仪、裂隙灯，主要用于主任医师日常接诊。</textarea>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+            <button onclick="closeRoomDrawer()" class="px-5 py-2.5 border border-gray-200 rounded-xl text-gray-600 hover:bg-white hover:border-gray-300 hover:text-gray-900 text-sm font-medium transition shadow-sm">取消</button>
+            <button onclick="saveRoom()" class="px-5 py-2.5 bg-primary-500 text-white rounded-xl hover:bg-primary-600 shadow-sm hover:shadow-md text-sm font-medium transition flex items-center gap-2">
+                <i class="ph-bold ph-check"></i> 保存信息
+            </button>
+        </div>
+    </div>
+
+    <div id="room-delete-modal" class="hidden fixed inset-0 z-[80] bg-black/30 backdrop-blur-sm flex items-center justify-center">
+        <div class="w-[360px] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+            <div class="px-5 py-4 border-b border-gray-100">
+                <h3 class="text-base font-bold text-gray-900">确认删除诊室</h3>
+            </div>
+            <div class="px-5 py-4 text-sm text-gray-600">
+                <p id="room-delete-text">删除后无法恢复，是否继续？</p>
+            </div>
+            <div class="px-5 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-2">
+                <button onclick="closeDeleteRoomConfirm()" class="px-4 py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-white transition">取消</button>
+                <button onclick="confirmDeleteRoom()" class="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 transition">确认删除</button>
+            </div>
+        </div>
+    </div>
+
     <script src="src/person-management.js"></script>
+    <script src="src/room-management.js"></script>
 </body>
 </html>
