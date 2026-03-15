@@ -28,10 +28,10 @@ function initOrderManagement() {
         ];
 
         scheduleStaff = [
-            { id: 'd1', name: '李主任', role: 'doctor', roleName: '医生', defaultCap: 1, color: 'bg-blue-500' },
+            { id: 'd1', name: '李主任', role: 'doctor', roleName: '医生', defaultCap: 3, color: 'bg-blue-500' },
             { id: 'd2', name: '王医生', role: 'doctor', roleName: '医生', defaultCap: 3, color: 'bg-blue-500' },
-            { id: 'o1', name: '张视光', role: 'optometrist', roleName: '视光师', defaultCap: 2, color: 'bg-primary-500' },
-            { id: 'o2', name: '赵视光', role: 'optometrist', roleName: '视光师', defaultCap: 2, color: 'bg-primary-500' },
+            { id: 'o1', name: '张视光', role: 'optometrist', roleName: '视光师', defaultCap: 5, color: 'bg-primary-500' },
+            { id: 'o2', name: '赵视光', role: 'optometrist', roleName: '视光师', defaultCap: 5, color: 'bg-primary-500' },
             { id: 't1', name: '王视训', role: 'trainer', roleName: '视训师', defaultCap: 0, color: 'bg-teal-500' },
             { id: 'r1', name: '赵前台', role: 'receptionist', roleName: '前台', defaultCap: 0, color: 'bg-amber-500' }
         ];
@@ -164,19 +164,51 @@ function renderScheduleTimeline(containerId, isEdit) {
         return;
     }
 
-    const allTimes = new Set();
-    activeIds.forEach(id => Object.keys(day.slots[id] || {}).forEach(t => allTimes.add(t)));
-    const sortedTimes = Array.from(allTimes).sort((a, b) => scheduleTimeToMins(a) - scheduleTimeToMins(b));
+    const timesAm = (() => {
+        const res = [];
+        let curr = scheduleTimeToMins(scheduleSettings.amStart);
+        const end = scheduleTimeToMins(scheduleSettings.amEnd);
+        while (curr < end) { res.push(scheduleMinsToTime(curr)); curr += scheduleSettings.duration; }
+        return res;
+    })();
+    const timesPm = (() => {
+        const res = [];
+        let curr = scheduleTimeToMins(scheduleSettings.pmStart);
+        const end = scheduleTimeToMins(scheduleSettings.pmEnd);
+        while (curr < end) { res.push(scheduleMinsToTime(curr)); curr += scheduleSettings.duration; }
+        return res;
+    })();
 
     container.innerHTML = activeIds.map(id => {
         const staff = scheduleStaff.find(s => s.id === id);
-        const blocks = sortedTimes.map(time => {
-            const cap = day.slots[id][time];
-            if (cap === undefined) return `<div class="w-14 shrink-0"></div>`;
+        const inAm = day.am.includes(id);
+        const inPm = day.pm.includes(id);
+
+        const blocksAm = timesAm.map(time => {
+            if (!inAm) {
+                return `<div title="暂无排班" class="shrink-0 w-16 h-14 rounded-xl border bg-gray-100 border-gray-200 text-gray-400 flex flex-col items-center justify-center"><span class="text-[10px] font-medium">${time}</span><span class="text-[11px] font-bold">未排班</span></div>`;
+            }
+            const cap = (day.slots[id] || {})[time];
+            if (cap === undefined) {
+                return `<div class="shrink-0 w-16 h-14 rounded-xl border bg-gray-50 border-gray-200 text-gray-400 flex flex-col items-center justify-center"><span class="text-[10px] font-medium">${time}</span><span class="text-[11px] font-bold">—</span></div>`;
+            }
             const click = isEdit ? `onclick="openScheduleCapPopover(event,'${id}','${time}',${cap})"` : '';
             return `<div ${click} class="shrink-0 w-16 h-14 rounded-xl border ${cap > 0 ? 'bg-primary-50 border-primary-200 text-primary-700' : 'bg-gray-100 border-gray-200 text-gray-400'} ${isEdit ? 'cursor-pointer hover:bg-primary-100' : ''} flex flex-col items-center justify-center"><span class="text-[10px] font-medium">${time}</span><span class="text-sm font-bold">${cap === 0 ? '停诊' : `${cap}人`}</span></div>`;
         }).join('');
-        return `<div class="flex items-center gap-3 bg-gray-50/70 p-2.5 rounded-2xl border border-gray-100"><div class="w-16 shrink-0 flex flex-col items-center border-r border-gray-200 pr-2"><div class="w-8 h-8 rounded-full ${staff.color} text-white flex items-center justify-center text-sm font-bold mb-1">${staff.name.charAt(0)}</div><span class="text-[10px] font-bold text-gray-700">${staff.name}</span></div><div class="flex-1 flex gap-2 overflow-x-auto no-scrollbar">${blocks}</div></div>`;
+
+        const blocksPm = timesPm.map(time => {
+            if (!inPm) {
+                return `<div title="暂无排班" class="shrink-0 w-16 h-14 rounded-xl border bg-gray-100 border-gray-200 text-gray-400 flex flex-col items-center justify-center"><span class="text-[10px] font-medium">${time}</span><span class="text-[11px] font-bold">未排班</span></div>`;
+            }
+            const cap = (day.slots[id] || {})[time];
+            if (cap === undefined) {
+                return `<div class="shrink-0 w-16 h-14 rounded-xl border bg-gray-50 border-gray-200 text-gray-400 flex flex-col items-center justify-center"><span class="text-[10px] font-medium">${time}</span><span class="text-[11px] font-bold">—</span></div>`;
+            }
+            const click = isEdit ? `onclick="openScheduleCapPopover(event,'${id}','${time}',${cap})"` : '';
+            return `<div ${click} class="shrink-0 w-16 h-14 rounded-xl border ${cap > 0 ? 'bg-primary-50 border-primary-200 text-primary-700' : 'bg-gray-100 border-gray-200 text-gray-400'} ${isEdit ? 'cursor-pointer hover:bg-primary-100' : ''} flex flex-col items-center justify-center"><span class="text-[10px] font-medium">${time}</span><span class="text-sm font-bold">${cap === 0 ? '停诊' : `${cap}人`}</span></div>`;
+        }).join('');
+
+        return `<div class="flex items-center gap-3 bg-gray-50/70 p-2.5 rounded-2xl border border-gray-100"><div class="w-16 shrink-0 flex flex-col items-center border-r border-gray-200 pr-2"><div class="w-8 h-8 rounded-full ${staff.color} text-white flex items-center justify-center text-sm font-bold mb-1">${staff.name.charAt(0)}</div><span class="text-[10px] font-bold text-gray-700">${staff.name}</span></div><div class="flex-1 flex items-center gap-2 overflow-x-auto no-scrollbar"><span class="text-xs text-gray-500 font-bold shrink-0 w-8 text-right">上午</span>${blocksAm}<div class="w-px h-14 bg-gray-200 shrink-0 mx-1"></div><span class="text-xs text-gray-500 font-bold shrink-0 w-8 text-right">下午</span>${blocksPm}</div></div>`;
     }).join('');
 }
 
